@@ -65,7 +65,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">796字</span>
+            <span class="post-count">811字</span>
         </span>
     </span>
 
@@ -127,10 +127,10 @@
 <li><p>运行 Hexo 查看当前效果</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
 
+
+
 </li>
 </ol>
-<a id="more"></a>
-
 <h2 id="配置-Blog-的主题"><a href="#配置-Blog-的主题" class="headerlink" title="配置 Blog 的主题"></a>配置 Blog 的主题</h2><p>需要保存主题文件的修改，还要合并原主题的更新。于是采用<code>git</code>子模块来管理。</p>
 <ol>
 <li><p>Fork 主题</p>
@@ -141,11 +141,14 @@
 <li><p>修改主题的配置文件 <code>thems/ayer/_config.yml</code></p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 侧边栏菜单</span></span><br><span class="line"><span class="attr">menu:</span></span><br></pre></td></tr></table></figure>
 </li>
+<li><p>安装插件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-generator-searchdb --save <span class="comment"># 搜索插件</span></span><br></pre></td></tr></table></figure>
+</li>
 <li><p>查看子模块</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git submodule</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>同步</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git pull</span><br><span class="line">$ git submodule update</span><br></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git pull</span><br><span class="line">$ git submodule update</span><br></pre></td></tr></table></figure>
 
 
 

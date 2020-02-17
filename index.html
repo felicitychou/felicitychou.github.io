@@ -220,11 +220,83 @@
 <li><p>运行 Hexo 查看当前效果</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
 
+
+
 </li>
 </ol>
-      
-      <a class="article-more-link" href="/zh-CN/create-hexo-blog.html">阅读更多...</a>
-      
+<h2 id="配置-Blog-的主题"><a href="#配置-Blog-的主题" class="headerlink" title="配置 Blog 的主题"></a>配置 Blog 的主题</h2><p>需要保存主题文件的修改，还要合并原主题的更新。于是采用<code>git</code>子模块来管理。</p>
+<ol>
+<li><p>Fork 主题</p>
+</li>
+<li><p>创建子模块</p>
+<figure class="highlight plain"><figcaption><span>git submodule add</span><a href="https://github.com/felicitychou/hexo-theme-ayer" target="_blank" rel="noopener">themes/ayer```</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">3. 修改 Blog 的配置文件&#96;_config.yml&#96;</span><br><span class="line"></span><br><span class="line">   &#96;&#96;&#96;yml</span><br><span class="line">   theme: ayer</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改主题的配置文件 <code>thems/ayer/_config.yml</code></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 侧边栏菜单</span></span><br><span class="line"><span class="attr">menu:</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装插件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-generator-searchdb --save <span class="comment"># 搜索插件</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查看子模块</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git submodule</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>同步</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git pull</span><br><span class="line">$ git submodule update</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<h2 id="创建-Github-Pages-项目"><a href="#创建-Github-Pages-项目" class="headerlink" title="创建 Github Pages 项目"></a>创建 Github Pages 项目</h2><p>登录 github.com，Create a new repository ，命名为 <code>username.github.io</code> </p>
+<p><strong>我已经创建过，此步略去</strong></p>
+<p>##配置「博客」源文件托管</p>
+<p>由于原始文件也需要版本管理，因此我选择存放在同一个项目的不同分支里。</p>
+<ol>
+<li><p>新建 <code>source</code> 分支</p>
+</li>
+<li><p>更改仓库的默认分支为 <code>source</code></p>
+</li>
+<li><p>将本地 Blog 目录与远程仓库关联</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git remote add origin https://github.com/username/username.github.io.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>推送 Blog 源文件</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git add .</span><br><span class="line">$ git commit -m <span class="string">'hexo source post'</span></span><br><span class="line">$ git push origin <span class="built_in">source</span></span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<h2 id="发布-Blog"><a href="#发布-Blog" class="headerlink" title="发布 Blog"></a>发布 Blog</h2><p>用 Hexo自带的发布功能。</p>
+<ol>
+<li><p>安装 <a href="https://github.com/hexojs/hexo-deployer-git" target="_blank" rel="noopener">hexo-deployer-git</a></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改 Blog 的配置文件</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">'git'</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">https://github.com/username/username.github.io</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>发布</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo clean &amp;&amp; hexo deploy -g</span><br></pre></td></tr></table></figure>
+
+
+
+
+</li>
+</ol>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
+<li><p>Hexo官方文档 <a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">https://hexo.io/zh-cn/docs/</a> </p>
+</li>
+<li><p>Ayer中文说明 <a href="https://shen-yu.gitee.io/2019/ayer/" target="_blank" rel="noopener">https://shen-yu.gitee.io/2019/ayer/</a></p>
+</li>
+<li><p>Github Pages 官方指引 <a href="https://pages.github.com/" target="_blank" rel="noopener">https://pages.github.com/</a></p>
+</li>
+<li><p>Hexo静态博客的文章源码和主题代码管理 <a href="http://www.neilron.xyz/hexo-blog-source-code-management/" target="_blank" rel="noopener">http://www.neilron.xyz/hexo-blog-source-code-management/</a></p>
+</li>
+<li><p>使用git分支保存hexo博客源码到github <a href="https://www.jianshu.com/p/8814ce1da7a4" target="_blank" rel="noopener">https://www.jianshu.com/p/8814ce1da7a4</a></p>
+</li>
+<li><p>hexo使用git子模块来管理theme <a href="https://xiongyingqi.com/2019/02/01/use-git-submodules/" target="_blank" rel="noopener">https://xiongyingqi.com/2019/02/01/use-git-submodules/</a></p>
+</li>
+</ol>
+
       
       <!-- reward -->
       
@@ -305,7 +377,7 @@
 <li><p>安装 Java SE 8u241。安装后，查看已安装的 Java 版本</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ /usr/libexec/java_home -V</span><br></pre></td></tr></table></figure>
 
-<p><img src="java-multi-version.assets/image-20200215135123596.png" alt="image-20200215135123596"></p>
+<p><img src="/zh-CN/java-multi-version/image-20200215135123596.png" alt="image-20200215135123596"></p>
 </li>
 <li><p>在<code>.bash_profile</code> 中，设置Java版本切换的命令</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> JAVA_8_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_241.jdk/Contents/Home</span><br><span class="line"><span class="built_in">export</span> JAVA_9_HOME=/Library/Java/JavaVirtualMachines/jdk-9.0.1.jdk/Contents/Home</span><br><span class="line"><span class="built_in">alias</span> jdk8=<span class="string">"export JAVA_HOME=<span class="variable">$JAVA_8_HOME</span>"</span> </span><br><span class="line"><span class="built_in">alias</span> jdk9=<span class="string">"export JAVA_HOME=<span class="variable">$JAVA_9_HOME</span>"</span> </span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=`/usr/libexec/java_home`</span><br></pre></td></tr></table></figure>
@@ -350,85 +422,6 @@
     
     
       
-    
-      
-    <article id="post-hello-world" class="article article-type-post" itemscope
-  itemprop="blogPost" data-scroll-reveal>
-
-  <div class="article-inner">
-    
-    <header class="article-header">
-       
-<h2 itemprop="name">
-  <a class="article-title" href="/zh-CN/hello-world.html"
-    >Hello World</a
-  >
-</h2>
-  
-
-    </header>
-    
-
-    
-    <div class="article-meta">
-      <a href="/zh-CN/hello-world.html" class="article-date">
-  <time datetime="2020-02-13T02:13:51.822Z" itemprop="datePublished">2020-02-13</time>
-</a>
-      
-      
-      
-      
-    </div>
-    
-
-    
-
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-
-
-      
-
-      
-      <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-      
-      <!-- reward -->
-      
-    </div>
-    
-    
-      <!-- copyright -->
-      
-    <footer class="article-footer">
-      
-      
-
-    </footer>
-
-  </div>
-
-  
-
-  
-
-  
-
-</article>
-    
     
   </article>
   

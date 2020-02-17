@@ -102,7 +102,7 @@
 <li><p>安装 Java SE 8u241。安装后，查看已安装的 Java 版本</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ /usr/libexec/java_home -V</span><br></pre></td></tr></table></figure>
 
-<p><img src="java-multi-version.assets/image-20200215135123596.png" alt="image-20200215135123596"></p>
+<p><img src="/zh-CN/java-multi-version/image-20200215135123596.png" alt="image-20200215135123596"></p>
 </li>
 <li><p>在<code>.bash_profile</code> 中，设置Java版本切换的命令</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> JAVA_8_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_241.jdk/Contents/Home</span><br><span class="line"><span class="built_in">export</span> JAVA_9_HOME=/Library/Java/JavaVirtualMachines/jdk-9.0.1.jdk/Contents/Home</span><br><span class="line"><span class="built_in">alias</span> jdk8=<span class="string">"export JAVA_HOME=<span class="variable">$JAVA_8_HOME</span>"</span> </span><br><span class="line"><span class="built_in">alias</span> jdk9=<span class="string">"export JAVA_HOME=<span class="variable">$JAVA_9_HOME</span>"</span> </span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=`/usr/libexec/java_home`</span><br></pre></td></tr></table></figure>
@@ -208,7 +208,7 @@
       </a>
     
     
-      <a href="/en/Hello-World-en.html" class="article-nav-link">
+      <a href="/en/hello-world.html" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
         <div class="article-nav-title">Hello World</div>
       </a>
