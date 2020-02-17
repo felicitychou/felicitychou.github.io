@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    关于 |  FunFen Channel
+    Java 多版本共存与切换 |  FunFen Channel
   </title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   
@@ -33,8 +33,7 @@
   <div id="app">
     <main class="content">
       <section class="outer">
-  
-<article id="page-" class="article article-type-page" itemscope
+  <article id="post-java-multi-version" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -42,13 +41,46 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  关于
+  Java 多版本共存与切换
 </h1>
   
 
     </header>
     
 
+    
+    <div class="article-meta">
+      <a href="/zh-CN/java-multi-version.html" class="article-date">
+  <time datetime="2020-02-15T05:19:50.000Z" itemprop="datePublished">2020-02-15</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E4%BD%BF%E7%94%A8%E6%8A%80%E5%B7%A7/">使用技巧</a>
+  </div>
+
+      
+      
+<div class="word_count">
+    <span class="post-time">
+        <span class="post-meta-item-icon">
+            <i class="ri-quill-pen-line"></i>
+            <span class="post-meta-item-text"> 字数统计:</span>
+            <span class="post-count">164字</span>
+        </span>
+    </span>
+
+    <span class="post-time">
+        &nbsp; | &nbsp;
+        <span class="post-meta-item-icon">
+            <i class="ri-book-open-line"></i>
+            <span class="post-meta-item-text"> 阅读时长≈</span>
+            <span class="post-count">1分钟</span>
+        </span>
+    </span>
+</div>
+
+      
+    </div>
     
 
     
@@ -61,7 +93,32 @@
       
 
       
-      <h1 id="FunFen"><a href="#FunFen" class="headerlink" title="FunFen"></a>FunFen</h1>
+      <p>原本我电脑只装了 Java 9，现在需要装 Java 8。</p>
+<ol>
+<li><p>下载  Java SE 8u241</p>
+<p><strong>需要登录 oracle 才能下载。没有账号的话，先注册一个。</strong></p>
+<p><a href="https://www.oracle.com/java/technologies/javase-downloads.html" target="_blank" rel="noopener">https://www.oracle.com/java/technologies/javase-downloads.html</a></p>
+</li>
+<li><p>安装 Java SE 8u241。安装后，查看已安装的 Java 版本</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ /usr/libexec/java_home -V</span><br></pre></td></tr></table></figure>
+
+<p><img src="java-multi-version.assets/image-20200215135123596.png" alt="image-20200215135123596"></p>
+</li>
+<li><p>在<code>.bash_profile</code> 中，设置Java版本切换的命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> JAVA_8_HOME=/Library/Java/JavaVirtualMachines/jdk1.8.0_241.jdk/Contents/Home</span><br><span class="line"><span class="built_in">export</span> JAVA_9_HOME=/Library/Java/JavaVirtualMachines/jdk-9.0.1.jdk/Contents/Home</span><br><span class="line"><span class="built_in">alias</span> jdk8=<span class="string">"export JAVA_HOME=<span class="variable">$JAVA_8_HOME</span>"</span> </span><br><span class="line"><span class="built_in">alias</span> jdk9=<span class="string">"export JAVA_HOME=<span class="variable">$JAVA_9_HOME</span>"</span> </span><br><span class="line"><span class="built_in">export</span> JAVA_HOME=`/usr/libexec/java_home`</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>查询当前 Java版本，如果需要其他版本就输入切换命令</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ java -version</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<p>参考</p>
+<blockquote>
+<p><a href="https://blog.csdn.net/gljazzgljazz/article/details/99953327" target="_blank" rel="noopener">在macOS中同时安装jdk8、jdk9、jdk11、jdk12并自由切换</a></p>
+</blockquote>
+
       
       <!-- reward -->
       
@@ -69,7 +126,7 @@
     
     
       <!-- copyright -->
-      <!--
+      
         <div class="declare">
           <ul class="post-copyright">
             <li>
@@ -80,9 +137,9 @@
             </li>
           </ul>
         </div>
-        -->
+        
     <footer class="article-footer">
-      <!--
+      
           
 <div class="share-btn">
       <span class="share-sns share-outer">
@@ -123,13 +180,15 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://felicitychou.github.io/about/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://felicitychou.github.io/zh-CN/java-multi-version.html" alt="微信分享二维码">
     </div>
 </div>
 
 <div id="share-mask"></div>
       
-      -->
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Java/" rel="tag">Java</a></li></ul>
+
 
     </footer>
 
@@ -137,18 +196,36 @@
 
   
   
+  <nav class="article-nav">
+    
+      <a href="/zh-CN/create-hexo-blog.html" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            Hexo 搭建 Github Blog
+          
+        </div>
+      </a>
+    
+    
+      <a href="/en/Hello-World-en.html" class="article-nav-link">
+        <strong class="article-nav-caption">下一篇</strong>
+        <div class="article-nav-title">Hello World</div>
+      </a>
+    
+  </nav>
+
 
   
 
   
 
+  
+  
   
 
 </article>
 </section>
-
-
-
       <footer class="footer">
   <div class="outer">
     <ul class="list-inline">
