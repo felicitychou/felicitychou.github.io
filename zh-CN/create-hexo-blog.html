@@ -65,7 +65,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">811字</span>
+            <span class="post-count">816字</span>
         </span>
     </span>
 
@@ -93,7 +93,7 @@
       
 
       
-      <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>今年定了目标，就是要好好记录和分享学到的技术。就计划在 Github 维护一个Blog。Github上建 Blog ，常见有三种方式 Jekyll、Hugo、Hexo。之前我用的是 Hexo，就继续用这个，再进行改造。主要有以下任务：</p>
+      <p>今年定了目标，就是要好好记录和分享学到的技术。就计划在 Github 维护一个Blog。Github上建 Blog ，常见有三种方式 Jekyll、Hugo、Hexo。之前我用的是 Hexo，就继续用这个，再进行改造。主要有以下任务：</p>
 <ol>
 <li>配置 Hexo 环境</li>
 <li>重新建站</li>
@@ -102,6 +102,9 @@
 <li>发布 Blog</li>
 </ol>
 <p>完成上面基础的步骤之后，再改造主题。</p>
+<a id="more"></a>
+
+
 <h2 id="配置-Hexo-环境"><a href="#配置-Hexo-环境" class="headerlink" title="配置 Hexo 环境"></a>配置 Hexo 环境</h2><ol>
 <li><p>安装 Homebrew</p>
 </li>
@@ -128,7 +131,6 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
 
 
-
 </li>
 </ol>
 <h2 id="配置-Blog-的主题"><a href="#配置-Blog-的主题" class="headerlink" title="配置 Blog 的主题"></a>配置 Blog 的主题</h2><p>需要保存主题文件的修改，还要合并原主题的更新。于是采用<code>git</code>子模块来管理。</p>
@@ -136,7 +138,10 @@
 <li><p>Fork 主题</p>
 </li>
 <li><p>创建子模块</p>
-<figure class="highlight plain"><figcaption><span>git submodule add</span><a href="https://github.com/felicitychou/hexo-theme-ayer" target="_blank" rel="noopener">themes/ayer```</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">3. 修改 Blog 的配置文件&#96;_config.yml&#96;</span><br><span class="line"></span><br><span class="line">   &#96;&#96;&#96;yml</span><br><span class="line">   theme: ayer</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git submodule add https:&#x2F;&#x2F;github.com&#x2F;felicitychou&#x2F;hexo-theme-ayer themes&#x2F;ayer</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改 Blog 的配置文件<code>_config.yml</code></p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">theme:</span> <span class="string">ayer</span></span><br></pre></td></tr></table></figure>
 </li>
 <li><p>修改主题的配置文件 <code>thems/ayer/_config.yml</code></p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 侧边栏菜单</span></span><br><span class="line"><span class="attr">menu:</span></span><br></pre></td></tr></table></figure>
@@ -156,8 +161,7 @@
 </ol>
 <h2 id="创建-Github-Pages-项目"><a href="#创建-Github-Pages-项目" class="headerlink" title="创建 Github Pages 项目"></a>创建 Github Pages 项目</h2><p>登录 github.com，Create a new repository ，命名为 <code>username.github.io</code> </p>
 <p><strong>我已经创建过，此步略去</strong></p>
-<p>##配置「博客」源文件托管</p>
-<p>由于原始文件也需要版本管理，因此我选择存放在同一个项目的不同分支里。</p>
+<h2 id="配置「博客」源文件托管"><a href="#配置「博客」源文件托管" class="headerlink" title="配置「博客」源文件托管"></a>配置「博客」源文件托管</h2><p>由于原始文件也需要版本管理，因此我选择存放在同一个项目的不同分支里。</p>
 <ol>
 <li><p>新建 <code>source</code> 分支</p>
 </li>
