@@ -112,51 +112,9 @@
 <p><strong>有些标签没翻译，之后再改也可以</strong></p>
 </li>
 </ol>
-<h2 id="修改主题的配置文件"><a href="#修改主题的配置文件" class="headerlink" title="修改主题的配置文件"></a>修改主题的配置文件</h2><ol>
-<li><p>修改侧边栏</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 侧边栏菜单</span></span><br><span class="line"><span class="attr">menu:</span></span><br><span class="line">  <span class="attr">index:</span> <span class="string">/</span></span><br><span class="line">  <span class="attr">archives:</span> <span class="string">/archives</span></span><br><span class="line">  <span class="attr">categories:</span> <span class="string">/categories</span></span><br><span class="line">  <span class="attr">tags:</span> <span class="string">/tags</span></span><br><span class="line">  <span class="attr">about:</span> <span class="string">/about</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>添加语言配置</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">default_lang:</span> <span class="string">zh-CN</span></span><br><span class="line"><span class="attr">langs:</span></span><br><span class="line">  <span class="attr">zh-CN:</span> <span class="string">简体中文</span></span><br><span class="line">  <span class="attr">en:</span> <span class="string">English</span></span><br></pre></td></tr></table></figure>
-
-
-
-</li>
-</ol>
-<h2 id="修改-sidebar-ejs"><a href="#修改-sidebar-ejs" class="headerlink" title="修改 sidebar.ejs"></a>修改 sidebar.ejs</h2><ol>
-<li><p><code>url_for</code> 改成 <code>url_for_lang</code> ，生成对应语言的链接。</p>
-</li>
-<li><p><code>&lt;%= i %&gt;</code> 改成<code>&lt;%= __(i) %&gt;</code>，生成的时候回调用语言文件。</p>
-</li>
-<li><p>添加菜单栏添加语言按钮，中文的情况下显示 English、英文的情况下显示简体中文。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;% for (var i in theme.langs)&#123;</span><br><span class="line">  if (page.lang!&#x3D;i) &#123;</span><br><span class="line">  %&gt;</span><br><span class="line">   </span><br><span class="line">  &lt;li class&#x3D;&quot;nav-item&quot;&gt;</span><br><span class="line">    &lt;% if (theme.default_lang&#x3D;&#x3D;i) &#123; %&gt;</span><br><span class="line">      &lt;a class&#x3D;&quot;nav-item-link&quot; href&#x3D;&quot;&lt;%- url_for(&#39;&#x2F;&#39;) %&gt;&quot;&gt;&lt;%&#x3D; theme.langs[i]%&gt;&lt;&#x2F;a&gt;</span><br><span class="line">      &lt;% &#125; else &#123; %&gt;</span><br><span class="line">    &lt;a class&#x3D;&quot;nav-item-link&quot; href&#x3D;&quot;&lt;%- url_for(i) %&gt;&quot;&gt;&lt;%&#x3D; theme.langs[i]%&gt;&lt;&#x2F;a&gt;</span><br><span class="line">    &lt;% &#125; %&gt;</span><br><span class="line">  &lt;&#x2F;li&gt;</span><br><span class="line">   </span><br><span class="line">  &lt;% &#125;&#125; %&gt;</span><br></pre></td></tr></table></figure>
-
-
-
-</li>
-</ol>
-<h2 id="修改-archive-ejs"><a href="#修改-archive-ejs" class="headerlink" title="修改 archive.ejs"></a>修改 archive.ejs</h2><ol>
-<li><p>显示文章的时候，检查该文章是不是当前语言。是的话，显示。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;% page.posts.each(function(post)&#123; %&gt;</span><br><span class="line">    &lt;%  if (page.lang&#x3D;&#x3D;post.lang)&#123;%&gt;</span><br><span class="line">        &lt;%- partial(&#39;article&#39;, &#123;post: post, index: true&#125;) %&gt;</span><br><span class="line">    &lt;% &#125; %&gt;</span><br><span class="line">&lt;% &#125;) %&gt;</span><br></pre></td></tr></table></figure>
-
-
-
-</li>
-</ol>
-<h2 id="修改-categories-ejs"><a href="#修改-categories-ejs" class="headerlink" title="修改 categories.ejs"></a>修改 categories.ejs</h2><ol>
-<li><p>只显示当前语言的分类</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;% site.categories.sort(&#39;name&#39;).each(function(item)&#123; %&gt;</span><br><span class="line">  &lt;% if(item.posts.length)&#123;</span><br><span class="line">      var count &#x3D; 0;</span><br><span class="line">      item.posts.each(function(post)&#123; </span><br><span class="line">         if(post.lang &#x3D;&#x3D; page.lang) &#123; count &#x3D; count + 1; &#125;</span><br><span class="line">      &#125;);</span><br><span class="line">      if(count)&#123; %&gt;</span><br><span class="line">    &lt;a class&#x3D;&quot;category-list-link&quot; href&#x3D;&quot;&lt;%- url_for_lang(config.root) %&gt;&lt;%- item.path %&gt;&quot; title&#x3D;&quot;&lt;%&#x3D; item.name %&gt;&quot;&gt;</span><br><span class="line">      &lt;li class&#x3D;&quot;category-list-item&quot;&gt;</span><br><span class="line">      &lt;%&#x3D; item.name %&gt;&lt;i&gt;&lt;%&#x3D; count %&gt;&lt;&#x2F;i&gt;</span><br><span class="line">      &lt;&#x2F;li&gt;</span><br><span class="line">    &lt;&#x2F;a&gt;</span><br><span class="line">    &lt;% &#125; %&gt;</span><br><span class="line">  &lt;% &#125; %&gt;</span><br><span class="line">&lt;% &#125;); %&gt;</span><br></pre></td></tr></table></figure>
-
-
-
-</li>
-</ol>
-<h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><ol>
-<li>写文章的时候，在文章头部指定语言 lang，就会显示在对应的语言站。</li>
-</ol>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: Hello World</span><br><span class="line">lang: en</span><br><span class="line">date: 2020-02-14 10:10:43</span><br><span class="line">updated: 2020-02-14 10:10:43</span><br><span class="line">categories: </span><br><span class="line">tags:</span><br><span class="line">---</span><br></pre></td></tr></table></figure>
-
-
+      
+      <a class="article-more-link" href="/zh-CN/config-multilang-blog.html">阅读更多...</a>
+      
       
       <!-- reward -->
       
@@ -262,80 +220,11 @@
 <li><p>运行 Hexo 查看当前效果</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
 
-
-
 </li>
 </ol>
-<h2 id="配置-Blog-的主题"><a href="#配置-Blog-的主题" class="headerlink" title="配置 Blog 的主题"></a>配置 Blog 的主题</h2><p>需要保存主题文件的修改，还要合并原主题的更新。于是采用<code>git</code>子模块来管理。</p>
-<ol>
-<li><p>Fork 主题</p>
-</li>
-<li><p>创建子模块</p>
-<figure class="highlight plain"><figcaption><span>git submodule add</span><a href="https://github.com/felicitychou/hexo-theme-ayer" target="_blank" rel="noopener">themes/ayer```</a></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">3. 修改 Blog 的配置文件&#96;_config.yml&#96;</span><br><span class="line"></span><br><span class="line">   &#96;&#96;&#96;yml</span><br><span class="line">   theme: ayer</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>修改主题的配置文件 <code>thems/ayer/_config.yml</code></p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 侧边栏菜单</span></span><br><span class="line"><span class="attr">menu:</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>查看子模块</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git submodule</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>同步</p>
- <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git pull</span><br><span class="line">$ git submodule update</span><br></pre></td></tr></table></figure>
-
-
-
-</li>
-</ol>
-<h2 id="创建-Github-Pages-项目"><a href="#创建-Github-Pages-项目" class="headerlink" title="创建 Github Pages 项目"></a>创建 Github Pages 项目</h2><p>登录 github.com，Create a new repository ，命名为 <code>username.github.io</code> </p>
-<p><strong>我已经创建过，此步略去</strong></p>
-<p>##配置「博客」源文件托管</p>
-<p>由于原始文件也需要版本管理，因此我选择存放在同一个项目的不同分支里。</p>
-<ol>
-<li><p>新建 <code>source</code> 分支</p>
-</li>
-<li><p>更改仓库的默认分支为 <code>source</code></p>
-</li>
-<li><p>将本地 Blog 目录与远程仓库关联</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git remote add origin https://github.com/username/username.github.io.git</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>推送 Blog 源文件</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git add .</span><br><span class="line">$ git commit -m <span class="string">'hexo source post'</span></span><br><span class="line">$ git push origin <span class="built_in">source</span></span><br></pre></td></tr></table></figure>
-
-
-
-</li>
-</ol>
-<h2 id="发布-Blog"><a href="#发布-Blog" class="headerlink" title="发布 Blog"></a>发布 Blog</h2><p>用 Hexo自带的发布功能。</p>
-<ol>
-<li><p>安装 <a href="https://github.com/hexojs/hexo-deployer-git" target="_blank" rel="noopener">hexo-deployer-git</a></p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ npm install hexo-deployer-git --save</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>修改 Blog 的配置文件</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">deploy:</span></span><br><span class="line">  <span class="attr">type:</span> <span class="string">'git'</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">https://github.com/username/username.github.io</span></span><br><span class="line">  <span class="attr">branch:</span> <span class="string">master</span></span><br></pre></td></tr></table></figure>
-</li>
-<li><p>发布</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo clean &amp;&amp; hexo deploy -g</span><br></pre></td></tr></table></figure>
-
-
-
-
-</li>
-</ol>
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ol>
-<li><p>Hexo官方文档 <a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">https://hexo.io/zh-cn/docs/</a> </p>
-</li>
-<li><p>Ayer中文说明 <a href="https://shen-yu.gitee.io/2019/ayer/" target="_blank" rel="noopener">https://shen-yu.gitee.io/2019/ayer/</a></p>
-</li>
-<li><p>Github Pages 官方指引 <a href="https://pages.github.com/" target="_blank" rel="noopener">https://pages.github.com/</a></p>
-</li>
-<li><p>Hexo静态博客的文章源码和主题代码管理 <a href="http://www.neilron.xyz/hexo-blog-source-code-management/" target="_blank" rel="noopener">http://www.neilron.xyz/hexo-blog-source-code-management/</a></p>
-</li>
-<li><p>使用git分支保存hexo博客源码到github <a href="https://www.jianshu.com/p/8814ce1da7a4" target="_blank" rel="noopener">https://www.jianshu.com/p/8814ce1da7a4</a></p>
-</li>
-<li><p>hexo使用git子模块来管理theme <a href="https://xiongyingqi.com/2019/02/01/use-git-submodules/" target="_blank" rel="noopener">https://xiongyingqi.com/2019/02/01/use-git-submodules/</a></p>
-</li>
-</ol>
-
+      
+      <a class="article-more-link" href="/zh-CN/create-hexo-blog.html">阅读更多...</a>
+      
       
       <!-- reward -->
       
