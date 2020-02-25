@@ -2,7 +2,7 @@
 <search>
   <entry>
     <title>未授权漏洞</title>
-    <url>/zh-CN/Summary-Unauthorized-Access-Vulnerability.html</url>
+    <url>/zh-CN/summary-unauthorized-access-vulnerability.html</url>
     <content><![CDATA[<p>漏洞场景</p>
 <ul>
 <li>Web服务类：页面、API<ul>
