@@ -96,7 +96,7 @@
       <p>漏洞场景</p>
 <ul>
 <li>Web服务类：页面、API<ul>
-<li>Docker（Restful 的 API）、Elasticsearch（Api）、CouchDB（Restful 的 API）</li>
+<li>Docker（Restful 的 API）、Elasticsearch（API）、CouchDB（Restful 的 API）</li>
 </ul>
 </li>
 <li>非Web服务类：数据库、缓存、远程控制等<ul>
@@ -113,7 +113,7 @@
 </li>
 <li>外围扫描<ul>
 <li>Web服务类：直接访问，根据返回的信息判断</li>
-<li>非Web服务类：利用客户端进行连接，根据连接是否成功及敏感命令是否执行成功判断漏洞是否存在</li>
+<li>非Web服务类：利用客户端进行连接，根据连接是否成功及敏感命令是否执行成功，判断漏洞是否存在</li>
 </ul>
 </li>
 </ul>
@@ -129,7 +129,7 @@
 <li>配置访问控制：只允许特定的IP访问</li>
 <li>配置绑定IP：如不需要开放外网，则绑定本地IP</li>
 <li>修改默认端口：避免端口扫描</li>
-<li>权限控制：非root用户启动，没有操作敏感文件的权限。</li>
+<li>权限控制：非root用户启动，没有操作敏感文件的权限</li>
 </ul>
 
       
