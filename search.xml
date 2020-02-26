@@ -1,6 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>安全开发生命周期（SDL:Security Development Lifecycle)</title>
+    <url>/zh-CN/security-development-lifecycle.html</url>
+    <content><![CDATA[<ol>
+<li>培训<ul>
+<li>项目所有相关人员都需要进行安全培训。要让每一个人都对安全有所了解。</li>
+<li>更重要是项目相关人员与安全人员能达到共识，好开展后续的工作。</li>
+</ul>
+</li>
+<li>要求（项目经理或产品经理）<ul>
+<li>确定安全的要求，也就是确定目标。有目标才好开展工作。</li>
+<li>从来没有万无一失的安全，要设计通过的最低标准。</li>
+<li>分析哪些部分更重要，更需要关注。</li>
+</ul>
+</li>
+<li>设计（项目经理或产品经理）<ul>
+<li>确定好安全需求</li>
+<li>减小暴露，越暴露越危险。</li>
+<li>攻击可能会来自哪里</li>
+</ul>
+</li>
+<li>实施（编程人员）<ul>
+<li>使用安全的函数和方法</li>
+<li>使用安全的开发工具</li>
+<li>静态分析</li>
+</ul>
+</li>
+<li>验证 （测试人员）<ul>
+<li>动态分析：侧重功能、逻辑</li>
+<li>模糊测试：侧重异常</li>
+</ul>
+</li>
+<li>发布（项目经理或产品经理）<ul>
+<li>做好记录，达到了哪些安全目标，哪些部分还存在风险但影响不大等。</li>
+</ul>
+</li>
+<li>响应<ul>
+<li>弄清楚出现漏洞发现问题，能找谁解决。</li>
+</ul>
+</li>
+</ol>
+<p><strong>安全从来就不是找茬。预防胜于治疗。</strong></p>
+<blockquote>
+<p><a href="https://www.cnblogs.com/xiaozi/p/9959726.html" target="_blank" rel="noopener">https://www.cnblogs.com/xiaozi/p/9959726.html</a><br><a href="https://www.microsoft.com/en-us/securityengineering/sdl/" target="_blank" rel="noopener">https://www.microsoft.com/en-us/securityengineering/sdl/</a><br><a href="https://wiki.owasp.org/index.php/OWASP_Secure_Software_Development_Lifecycle_Project" target="_blank" rel="noopener">https://wiki.owasp.org/index.php/OWASP_Secure_Software_Development_Lifecycle_Project</a></p>
+</blockquote>
+]]></content>
+  </entry>
+  <entry>
     <title>未授权漏洞</title>
     <url>/zh-CN/summary-unauthorized-access-vulnerability.html</url>
     <content><![CDATA[<p>漏洞场景</p>
