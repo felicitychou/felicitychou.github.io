@@ -3,11 +3,10 @@
   <entry>
     <title>Postgresql CVE-2019-9193 是安全漏洞吗？</title>
     <url>/zh-CN/CVE-2019-9193.html</url>
-    <content><![CDATA[<p>今天在搜索 Postgresql 漏洞的时候，看到好几篇都说 CVE-2019-9193 任意代码执行、命令执行，还有漏洞复现文章。</p>
-<p>然而又看到一篇文章标题《PostgreSQL否认CVE-2019-9193为安全漏洞》？？？</p>
-<p>又查了一下CNVD的这个<a href="https://www.cnvd.org.cn/flaw/show/CNVD-2019-08279" target="_blank" rel="noopener">漏洞</a>的信息，危险级别高，结果参考链接打不开。</p>
-<p>那到底 CVE-2019-9193 是不是安全漏洞的？</p>
-<h3 id="Postgresql原文"><a href="#Postgresql原文" class="headerlink" title="Postgresql原文"></a>Postgresql原文</h3><blockquote>
+    <content><![CDATA[<p>今天在搜索 Postgresql 漏洞的时候，看到好几篇都说<code>CVE-2019-9193</code>任意代码执行、命令执行，还有漏洞复现文章。</p>
+<p>然而看到一篇文章标题《PostgreSQL否认CVE-2019-9193为安全漏洞》？？？</p>
+<p>查了一下CNVD的这个<a href="https://www.cnvd.org.cn/flaw/show/CNVD-2019-08279" target="_blank" rel="noopener">漏洞</a>的信息，危险级别高，结果参考链接打不开？？？</p>
+<h2 id="那到底-CVE-2019-9193-是个什么情况？"><a href="#那到底-CVE-2019-9193-是个什么情况？" class="headerlink" title="那到底 CVE-2019-9193 是个什么情况？"></a>那到底 CVE-2019-9193 是个什么情况？</h2><h3 id="Postgresql原文"><a href="#Postgresql原文" class="headerlink" title="Postgresql原文"></a>Postgresql原文</h3><blockquote>
 <p><a href="https://www.postgresql.org/about/news/1935/" target="_blank" rel="noopener">https://www.postgresql.org/about/news/1935/</a></p>
 </blockquote>
 <p>大概意思就是超级用户和pg_execute_server_program，本来就可以执行命令。</p>
@@ -52,7 +51,7 @@
 </ul>
 <h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><ul>
 <li>不是狭义上的漏洞。</li>
-<li>权限设置有问题的话，的确可以执行代码、读写文件，用来渗透。</li>
+<li>权限设置有问题的话，的确可以执行代码、读写文件，渗透可用。</li>
 <li>服务器上的敏感文件不要随便开放给其他用户读写，遵循最小化权限原则。</li>
 </ul>
 ]]></content>

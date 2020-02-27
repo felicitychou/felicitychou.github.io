@@ -5726,15 +5726,15 @@ button {
   -webkit-overflow-scrolling: touch;
 }
 .content.on {
-  transform: translateX(10rem);
+  transform: translateX(15rem);
   margin-left: 0 !important;
 }
 .sidebar {
   position: fixed;
   z-index: 9;
-  left: -10rem;
+  left: -15rem;
   bottom: 0;
-  width: 10rem;
+  width: 15rem;
   height: 100%;
   background-color: rgba(0,0,0,0.8);
 }
@@ -5744,7 +5744,7 @@ button {
 .navbar-toggle {
   position: absolute;
   top: 1.5rem;
-  left: 11.5rem;
+  left: 16.5rem;
   border: none;
   height: 4rem;
   width: 4rem;
@@ -6054,7 +6054,7 @@ button {
   width: 100%;
   position: fixed;
   top: -100%;
-  right: 10rem;
+  right: 15rem;
   left: 0;
   opacity: 0;
   transition: 0.3s;
@@ -6479,7 +6479,7 @@ a.toc-link {
 .is-position-fixed {
   position: fixed !important;
   top: 0;
-  right: 10rem;
+  right: 15rem;
 }
 .toc-link::before {
   background-color: #cce5ff;
