@@ -5791,12 +5791,12 @@ button {
   }
   .wrap,
   .outer {
-    width: 70rem;
+    width: 100rem;
     padding-right: 0;
     padding-left: 0;
   }
   .local-search {
-    width: 70rem;
+    width: 100rem;
   }
   .content.on {
     transform: none;
