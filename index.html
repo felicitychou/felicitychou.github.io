@@ -59,7 +59,7 @@
        
 <h2 itemprop="name">
   <a class="article-title" href="/zh-CN/cve-2018-1058.html"
-    >Postgresql CVE-2018-1058</a
+    >Postgresql CVE-2018-1058 漏洞分析与利用</a
   >
 </h2>
   
@@ -93,8 +93,8 @@
       
 
       
-      <p>基于该文《<a href="https://xz.aliyun.com/t/2109" target="_blank" rel="noopener">PostgreSQL 远程代码执行漏洞分析及利用—【CVE-2018-1058】</a> 》，对 Postgresql CVE-2018-1058 漏洞进行研究。文章开头先谢谢大佬！</p>
-<p>[ToC]</p>
+      <p>基于该文《<a href="https://xz.aliyun.com/t/2109" target="_blank" rel="noopener">PostgreSQL 远程代码执行漏洞分析及利用—【CVE-2018-1058】</a> 》，对 Postgresql CVE-2018-1058 漏洞进行研究。</p>
+<p>在此，感谢大佬chybeta的分享。</p>
 <h2 id="0x01-漏洞介绍"><a href="#0x01-漏洞介绍" class="headerlink" title="0x01 漏洞介绍"></a>0x01 漏洞介绍</h2><ul>
 <li><p>CVE：<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-1058" target="_blank" rel="noopener">CVE-2018-1058</a></p>
 </li>
@@ -118,44 +118,6 @@
 <li><p>总结：有问题的是客户端，属于设计缺陷。</p>
 </li>
 </ul>
-<h2 id="0x02-漏洞原理"><a href="#0x02-漏洞原理" class="headerlink" title="0x02 漏洞原理"></a>0x02 漏洞原理</h2><ol>
-<li>小实验<ul>
-<li>新建<code>public.test</code>表，插入内容<code>just test01</code>；</li>
-<li>新建<code>schema</code>，名为<code>test</code>；</li>
-<li>新建<code>test.test</code>表，插入内容<code>just test02</code></li>
-</ul>
-</li>
-</ol>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">evil=&gt; create table public.test as select 'just test01'::text as test;</span><br><span class="line">SELECT 1</span><br><span class="line">evil=&gt; select * from test;</span><br><span class="line">    test     </span><br><span class="line">-------------</span><br><span class="line"> just test01</span><br><span class="line">(1 row)</span><br><span class="line"></span><br><span class="line">evil=&gt; create schema test;</span><br><span class="line">CREATE SCHEMA</span><br><span class="line">evil=&gt; create table test.test as select 'just test02'::text as test;</span><br><span class="line">SELECT 1</span><br><span class="line">evil=&gt; select * from test;</span><br><span class="line">    test     </span><br><span class="line">-------------</span><br><span class="line"> just test02</span><br><span class="line">(1 row)</span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li><p>小实验里为什么两次<code>select</code>的结果不一样？</p>
-<ul>
-<li><p>7.3 版本开始增加了<a href="https://www.postgresql.org/docs/current/static/ddl-schemas.html" target="_blank" rel="noopener">schemas</a>，用户可以在独立的命名空间创建数据表、函数等。默认的命名空间叫<code>public</code>。我的理解，就是一个大的数据库还可以分成几个小的数据库。比如有一个网站A和B共用一个数据库，A的用户表<code>A.user</code>，B的用户表<code>B.user</code>。</p>
-</li>
-<li><p>在没有注明<code>schema</code>的情况下，数据库会根据配置 <code>search_path</code>，来选择<code>schema</code>。</p>
-</li>
-<li><p>默认<code>search_path</code>的配置，<code>$user</code>排在<code>public</code> 前。<code>$user</code>的值可以通过<code>SELECT SESSION_USER;</code>得到。</p>
-<blockquote>
-<p> The default value for <code>search_path</code> is <code>$user,public</code> where <code>$user</code> refers to the name of the user connected (which can be determined by executing <code>SELECT SESSION_USER;</code>).</p>
-</blockquote>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">evil=&gt; SHOW search_path;</span><br><span class="line">   search_path   </span><br><span class="line">-----------------</span><br><span class="line"> "$user", public</span><br><span class="line">(1 row)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>通过<code>current_schema();</code>可以查询到当前数据库默认的<code>schema</code>。<code>test</code>用户登录时，在没有名为<code>test</code>的<code>schema</code>，默认的<code>schema</code>为<code>public</code>。当新建了名为<code>test</code>的<code>schema</code>，默认的<code>schema</code>为<code>test</code>。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">evil=&gt; SELECT current_schema();</span><br><span class="line"> current_schema </span><br><span class="line">----------------</span><br><span class="line"> public</span><br><span class="line">(1 row)</span><br><span class="line"></span><br><span class="line">evil=&gt; create schema test;</span><br><span class="line">CREATE SCHEMA</span><br><span class="line">evil=&gt; SELECT current_schema();</span><br><span class="line"> current_schema </span><br><span class="line">----------------</span><br><span class="line"> test</span><br><span class="line">(1 row)</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>因此就可以解释为什么两次<code>select</code>的结果不一样。</p>
-<ul>
-<li>第一次<code>select * from test;</code>，数据库默认的<code>schema</code>是<code>public</code>，实际上执行的是<code>select * from public.test;</code></li>
-<li>第二次<code>select * from test;</code>，数据库默认的<code>schema</code>是<code>test</code>，实际上执行的是<code>select * from public.test;</code></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p>总结</p>
-<p>根据<code>search_path</code>，创建排在前面的<code>schema</code>，就可以在使用默认<code>schema</code>的情况下，改变所使用的<code>schema</code>。<strong>那会有什么样的危害？</strong></p>
-</li>
-</ol>
       
       <a class="article-more-link" href="/zh-CN/cve-2018-1058.html">阅读更多...</a>
       
@@ -618,7 +580,11 @@
     >Hexo 搭建 Github Blog</a
   >
 </h2>
-  
+ 
+<div class="article-topping">
+  <i class="ri-umbrella-line"></i>
+</div>
+ 
 
     </header>
     
