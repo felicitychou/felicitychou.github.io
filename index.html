@@ -50,7 +50,7 @@
     
     
       
-    <article id="post-CVE-2019-9193" class="article article-type-post" itemscope
+    <article id="post-cve-2018-1058" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -58,7 +58,144 @@
     <header class="article-header">
        
 <h2 itemprop="name">
-  <a class="article-title" href="/zh-CN/CVE-2019-9193.html"
+  <a class="article-title" href="/zh-CN/cve-2018-1058.html"
+    >Postgresql CVE-2018-1058</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/zh-CN/cve-2018-1058.html" class="article-date">
+  <time datetime="2020-02-29T08:29:33.000Z" itemprop="datePublished">2020-02-29</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E6%BC%8F%E6%B4%9E%E7%A0%94%E7%A9%B6/">漏洞研究</a>
+  </div>
+
+      
+      
+      
+    </div>
+    
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p>基于该文《<a href="https://xz.aliyun.com/t/2109" target="_blank" rel="noopener">PostgreSQL 远程代码执行漏洞分析及利用—【CVE-2018-1058】</a> 》，对 Postgresql CVE-2018-1058 漏洞进行研究。文章开头先谢谢大佬！</p>
+<p>[ToC]</p>
+<h2 id="0x01-漏洞介绍"><a href="#0x01-漏洞介绍" class="headerlink" title="0x01 漏洞介绍"></a>0x01 漏洞介绍</h2><ul>
+<li><p>CVE：<a href="http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-1058" target="_blank" rel="noopener">CVE-2018-1058</a></p>
+</li>
+<li><p>Postgresql</p>
+<ul>
+<li><p><a href="https://www.postgresql.org/about/news/1834/" target="_blank" rel="noopener">官方说法</a>：CVE-2018-1058: 在pg_dump与其他客户端应用里不可控的 search path。（渣翻）</p>
+<blockquote>
+<p>CVE-2018-1058: Uncontrolled search path element in pg_dump and other client applications</p>
+<p>Please visit <a href="https://wiki.postgresql.org/wiki/A_Guide_to_CVE-2018-1058%3A_Protect_Your_Search_Path" target="_blank" rel="noopener">A Guide to CVE-2018-1058: Protect Your Search Path</a> for a full explanation of the CVE-2018-1058.</p>
+</blockquote>
+</li>
+<li><p><a href="https://github.com/postgres/postgres/commit/5770172cb0c9df9e6ce27c507b449557e5b45124" target="_blank" rel="noopener">修复记录</a>：修复方法，一大堆客户端将忽略数据库<code>search_path</code>和<code>schema privileges</code>，但是不包括<code>psql</code>and <code>pgbench</code>。</p>
+<blockquote>
+<p>As special exceptions, the following client applications behave as documented regardless of search_path settings and schema privileges: clusterdb createdb createlang createuser dropdb droplang dropuser ecpg (not programs it generates) initdb oid2name pg_archivecleanup pg_basebackup pg_config pg_controldata pg_ctl pg_dump pg_dumpall pg_isready pg_receivewal pg_recvlogical pg_resetwal pg_restore pg_rewind pg_standby pg_test_fsync pg_test_timing pg_upgrade pg_waldump reindexdb vacuumdb vacuumlo.  Not included are core client programs that run user-specified SQL commands, namely psql and pgbench.  PostgreSQL encourages non-core client applications to do likewise.</p>
+</blockquote>
+</li>
+<li><p>修复的版本：10.3, 9.6.8, 9.5.12, 9.4.17, 9.3.22。</p>
+</li>
+</ul>
+</li>
+<li><p>总结：有问题的是客户端，属于设计缺陷。</p>
+</li>
+</ul>
+<h2 id="0x02-漏洞原理"><a href="#0x02-漏洞原理" class="headerlink" title="0x02 漏洞原理"></a>0x02 漏洞原理</h2><ol>
+<li>小实验<ul>
+<li>新建<code>public.test</code>表，插入内容<code>just test01</code>；</li>
+<li>新建<code>schema</code>，名为<code>test</code>；</li>
+<li>新建<code>test.test</code>表，插入内容<code>just test02</code></li>
+</ul>
+</li>
+</ol>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">evil=&gt; create table public.test as select 'just test01'::text as test;</span><br><span class="line">SELECT 1</span><br><span class="line">evil=&gt; select * from test;</span><br><span class="line">    test     </span><br><span class="line">-------------</span><br><span class="line"> just test01</span><br><span class="line">(1 row)</span><br><span class="line"></span><br><span class="line">evil=&gt; create schema test;</span><br><span class="line">CREATE SCHEMA</span><br><span class="line">evil=&gt; create table test.test as select 'just test02'::text as test;</span><br><span class="line">SELECT 1</span><br><span class="line">evil=&gt; select * from test;</span><br><span class="line">    test     </span><br><span class="line">-------------</span><br><span class="line"> just test02</span><br><span class="line">(1 row)</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><p>小实验里为什么两次<code>select</code>的结果不一样？</p>
+<ul>
+<li><p>7.3 版本开始增加了<a href="https://www.postgresql.org/docs/current/static/ddl-schemas.html" target="_blank" rel="noopener">schemas</a>，用户可以在独立的命名空间创建数据表、函数等。默认的命名空间叫<code>public</code>。我的理解，就是一个大的数据库还可以分成几个小的数据库。比如有一个网站A和B共用一个数据库，A的用户表<code>A.user</code>，B的用户表<code>B.user</code>。</p>
+</li>
+<li><p>在没有注明<code>schema</code>的情况下，数据库会根据配置 <code>search_path</code>，来选择<code>schema</code>。</p>
+</li>
+<li><p>默认<code>search_path</code>的配置，<code>$user</code>排在<code>public</code> 前。<code>$user</code>的值可以通过<code>SELECT SESSION_USER;</code>得到。</p>
+<blockquote>
+<p> The default value for <code>search_path</code> is <code>$user,public</code> where <code>$user</code> refers to the name of the user connected (which can be determined by executing <code>SELECT SESSION_USER;</code>).</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">evil=&gt; SHOW search_path;</span><br><span class="line">   search_path   </span><br><span class="line">-----------------</span><br><span class="line"> "$user", public</span><br><span class="line">(1 row)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>通过<code>current_schema();</code>可以查询到当前数据库默认的<code>schema</code>。<code>test</code>用户登录时，在没有名为<code>test</code>的<code>schema</code>，默认的<code>schema</code>为<code>public</code>。当新建了名为<code>test</code>的<code>schema</code>，默认的<code>schema</code>为<code>test</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">evil=&gt; SELECT current_schema();</span><br><span class="line"> current_schema </span><br><span class="line">----------------</span><br><span class="line"> public</span><br><span class="line">(1 row)</span><br><span class="line"></span><br><span class="line">evil=&gt; create schema test;</span><br><span class="line">CREATE SCHEMA</span><br><span class="line">evil=&gt; SELECT current_schema();</span><br><span class="line"> current_schema </span><br><span class="line">----------------</span><br><span class="line"> test</span><br><span class="line">(1 row)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>因此就可以解释为什么两次<code>select</code>的结果不一样。</p>
+<ul>
+<li>第一次<code>select * from test;</code>，数据库默认的<code>schema</code>是<code>public</code>，实际上执行的是<code>select * from public.test;</code></li>
+<li>第二次<code>select * from test;</code>，数据库默认的<code>schema</code>是<code>test</code>，实际上执行的是<code>select * from public.test;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>总结</p>
+<p>根据<code>search_path</code>，创建排在前面的<code>schema</code>，就可以在使用默认<code>schema</code>的情况下，改变所使用的<code>schema</code>。<strong>那会有什么样的危害？</strong></p>
+</li>
+</ol>
+      
+      <a class="article-more-link" href="/zh-CN/cve-2018-1058.html">阅读更多...</a>
+      
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Postgresql/" rel="tag">Postgresql</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+    
+    
+      
+    <article id="post-cve-2019-9193" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/zh-CN/cve-2019-9193.html"
     >Postgresql CVE-2019-9193 是安全漏洞吗？</a
   >
 </h2>
@@ -69,7 +206,7 @@
 
     
     <div class="article-meta">
-      <a href="/zh-CN/CVE-2019-9193.html" class="article-date">
+      <a href="/zh-CN/cve-2019-9193.html" class="article-date">
   <time datetime="2020-02-27T14:26:58.000Z" itemprop="datePublished">2020-02-27</time>
 </a>
       
