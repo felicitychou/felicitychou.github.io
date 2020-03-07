@@ -3,9 +3,9 @@
   <entry>
     <title>主机安全、端点防护、HIDS、EDR、CWPP？</title>
     <url>/zh-CN/host-secruity.html</url>
-    <content><![CDATA[<p>为了加深对安全的了解，研究一下安全产品。</p>
-<p>写的不完全、写的不一定对。</p>
-<p>随着认识的增加，再持续更新~</p>
+    <content><![CDATA[<p><strong>为了加深对安全的了解，研究一下安全产品。</strong></p>
+<p><strong>写的不完全、写的不一定对。</strong></p>
+<p><strong>随着认识的增加，再持续更新~</strong></p>
 <ul>
 <li><p>主机都指哪些？</p>
 <ul>
@@ -19,7 +19,7 @@
 <li>确定的白：不符合正常行为，筛选出异常行为</li>
 </ul>
 </li>
-<li><p>端点检测与响应(EndpointDetection&amp;Response,<em>EDR</em>) </p>
+<li><p>端点检测与响应 - EndpointDetection&amp;Response EDR</p>
 <ul>
 <li>主要针对办公终端，属于办公安全；</li>
 <li>挑战<ul>
@@ -56,7 +56,7 @@
 </li>
 </ul>
 </li>
-<li><p>云工作保护平台(Cloud Workload Protection Platform)简称 CWPP</p>
+<li><p>云工作保护平台 - Cloud Workload Protection Platform CWPP</p>
 <ul>
 <li>主要针对：服务器包括云服务器、容器；属于运维安全；</li>
 <li>挑战：<ul>
