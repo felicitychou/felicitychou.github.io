@@ -1,6 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>主机安全、端点防护、HIDS、EDR、CWPP？</title>
+    <url>/zh-CN/host-secruity.html</url>
+    <content><![CDATA[<p>为了加深对安全的了解，研究一下安全产品。</p>
+<p>写的不完全、写的不一定对。</p>
+<p>随着认识的增加，再持续更新~</p>
+<ul>
+<li><p>主机都指哪些？</p>
+<ul>
+<li>办公终端：笔记本电脑、台式电脑、手机、平板电脑</li>
+<li>服务器：物理服务器、云服务器、容器</li>
+</ul>
+</li>
+<li><p>入侵检测主要思路</p>
+<ul>
+<li>确定的黑：黑特征匹配</li>
+<li>确定的白：不符合正常行为，筛选出异常行为</li>
+</ul>
+</li>
+<li><p>端点检测与响应(EndpointDetection&amp;Response,<em>EDR</em>) </p>
+<ul>
+<li>主要针对办公终端，属于办公安全；</li>
+<li>挑战<ul>
+<li>兼容性：多种终端、多种操作系统（Windows、Mac、Linux、ios、安卓）</li>
+<li>网络接入多样化，网络界线模糊，难以确认终端身份。</li>
+<li>威胁检测的准确性；</li>
+<li>资源耗用少；</li>
+</ul>
+</li>
+<li>威胁场景<ul>
+<li>接收带有恶意软件的邮件，并在运行恶意软件；</li>
+<li>从网上下载了一些恶意office文档，并用漏洞版本的软件打开。</li>
+<li>被其他受感染的终端传染。</li>
+<li>安装破解版、带有后门的软件。</li>
+</ul>
+</li>
+<li>主要解决的问题<ul>
+<li>入侵检测：勒索病毒、木马</li>
+<li>设备准入：系统环境检测合格才能接入网络，接入网络的时候，绑定设备与使用人的身份；</li>
+<li>安全加固：操作系统加固、应用加固，修复漏洞；</li>
+<li>日志记录：进程、网络、注册表等信息，掌握终端的实时情况；</li>
+<li>网络访问控制：每台终端根据使用人的身份，设定允许访问的网络。</li>
+</ul>
+</li>
+<li>商业化产品<ul>
+<li><a href="https://edr.sangfor.com.cn/#/index/home" target="_blank" rel="noopener">深信服EDR</a></li>
+<li><a href="https://ioa.tencent.com/" target="_blank" rel="noopener">腾讯iOA</a></li>
+<li><a href="https://www.nsfocus.com.cn/html/2019/207_1230/89.html" target="_blank" rel="noopener">绿盟EDR</a></li>
+</ul>
+</li>
+<li>开源软件<ul>
+<li>OSSEC</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>云工作保护平台(Cloud Workload Protection Platform)简称 CWPP</p>
+<ul>
+<li>主要针对：服务器包括云服务器、容器；属于运维安全；</li>
+<li>挑战：<ul>
+<li>兼容性：各式各样的Linux操作系统</li>
+<li>稳定性：绝对不能影响生产系统</li>
+<li>加固难：无法预料系统升级与加固带来的影响。</li>
+<li>资源耗用要少；</li>
+</ul>
+</li>
+<li>主要解决的问题<ul>
+<li>入侵检测：弱密码、暴力破解、提权等</li>
+<li>漏洞管理：漏洞检测与修复</li>
+<li>网络访问控制</li>
+<li>日志记录</li>
+<li>资产清点</li>
+<li>合规基线</li>
+</ul>
+</li>
+<li>商业化产品<ul>
+<li><a href="https://www.aliyun.com/product/aegis?spm=5176.224200.h2v3icoap.123.28c26ed6q5yfJa&aly_as=6xjjdde-" target="_blank" rel="noopener">阿里云安骑士</a></li>
+<li><a href="https://qingteng.cn/index.html" target="_blank" rel="noopener">青藤云主机自适应安全平台</a></li>
+<li><a href="https://cloud.tencent.com/product/cwp" target="_blank" rel="noopener">腾讯云主机安全</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>学习总结</category>
+      </categories>
+      <tags>
+        <tag>主机安全</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>MySQL CVE-2016-6662 漏洞利用与分析</title>
     <url>/zh-CN/cve-2016-6662.html</url>
     <content><![CDATA[<p>不想跟着参考文章模仿一遍，就选择其他操作系统搭建另外漏洞版本的MySQL。</p>
