@@ -50,6 +50,114 @@
     
     
       
+    <article id="post-centos-set-static-ip" class="article article-type-post" itemscope
+  itemprop="blogPost" data-scroll-reveal>
+
+  <div class="article-inner">
+    
+    <header class="article-header">
+       
+<h2 itemprop="name">
+  <a class="article-title" href="/zh-CN/centos-set-static-ip.html"
+    >只不过是设置静态IP，SSH却连不上了？</a
+  >
+</h2>
+  
+
+    </header>
+    
+
+    
+    <div class="article-meta">
+      <a href="/zh-CN/centos-set-static-ip.html" class="article-date">
+  <time datetime="2020-03-12T15:55:27.000Z" itemprop="datePublished">2020-03-12</time>
+</a>
+      
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/">经验分享</a>
+  </div>
+
+      
+      
+      
+    </div>
+    
+
+    
+
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+
+
+      
+
+      
+      <p>由于我的CentOS虚拟机是通过DHCP动态获得IP地址，时不时就变一下。</p>
+<p>导致保存好的SSH配置老是要随着更改。</p>
+<p>我终于忍不住，决定配置静态IP。</p>
+<p>配置好IP，SSH居然连不上了？？？</p>
+<p>开头先感谢下列参考文章的作者，帮助我解决问题<del>~</del></p>
+<blockquote>
+<p><a href="https://www.cnblogs.com/yhongji/p/9336247.html" target="_blank" rel="noopener">centos7配置IP地址</a></p>
+<p><a href="https://www.jianshu.com/p/0bdd3116736f" target="_blank" rel="noopener">CentOS 修改静态IP，SSH 连接异常的问题。</a></p>
+<p><a href="[https://blog.csdn.net/weixin_42715413/article/details/84643885">解决ssh连接慢，挂起在SSH2_MSG_SERVICE_ACCEPT信息之后很久的问题</a></p>
+</blockquote>
+<h3 id="配置静态IP"><a href="#配置静态IP" class="headerlink" title="配置静态IP"></a>配置静态IP</h3><ol>
+<li><p>查询网卡信息，确定要更改的网卡名称为<code>ens33</code>。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# ip addr</span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: ens33: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP group default qlen 1000</span><br><span class="line">    link/ether 00:0c:29:27:9e:d1 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.187.200/24 brd 192.168.187.255 scope global noprefixroute ens33</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::d83c:c0cb:f482:e7c0/64 scope link noprefixroute </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">3: virbr0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue state DOWN group default qlen 1000</span><br><span class="line">    link/ether 52:54:00:4a:82:31 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">4: virbr0-nic: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc pfifo_fast master virbr0 state DOWN group default qlen 1000</span><br><span class="line">    link/ether 52:54:00:4a:82:31 brd ff:ff:ff:ff:ff:ff</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改网卡配置，把<code>BOOTPROTO=&quot;dhcp&quot;</code>改为<code>BOOTPROTO=&quot;static&quot;</code>，增加<code>IPADDR</code>、<code>NETMASK</code>、<code>GATEWAY</code>、<code>DNS</code>，保存文件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# nano &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-ens33</span><br><span class="line"></span><br><span class="line">修改前</span><br><span class="line">TYPE&#x3D;&quot;Ethernet&quot;</span><br><span class="line">PROXY_METHOD&#x3D;&quot;none&quot;</span><br><span class="line">BROWSER_ONLY&#x3D;&quot;no&quot;</span><br><span class="line">BOOTPROTO&#x3D;&quot;dhcp&quot;</span><br><span class="line">DEFROUTE&#x3D;&quot;yes&quot;</span><br><span class="line">IPV4_FAILURE_FATAL&#x3D;&quot;no&quot;</span><br><span class="line">IPV6INIT&#x3D;&quot;yes&quot;</span><br><span class="line">IPV6_AUTOCONF&#x3D;&quot;yes&quot;</span><br><span class="line">IPV6_DEFROUTE&#x3D;&quot;yes&quot;</span><br><span class="line">IPV6_FAILURE_FATAL&#x3D;&quot;no&quot;</span><br><span class="line">IPV6_ADDR_GEN_MODE&#x3D;&quot;stable-privacy&quot;</span><br><span class="line">NAME&#x3D;&quot;ens33&quot;</span><br><span class="line">UUID&#x3D;&quot;c3ba1376-66b3-4fa7-804d-528c7f4fea6e&quot;</span><br><span class="line">DEVICE&#x3D;&quot;ens33&quot;</span><br><span class="line">ONBOOT&#x3D;&quot;yes&quot;</span><br><span class="line"></span><br><span class="line">修改后</span><br><span class="line">YPE&#x3D;&quot;Ethernet&quot;</span><br><span class="line">PROXY_METHOD&#x3D;&quot;none&quot;</span><br><span class="line">BROWSER_ONLY&#x3D;&quot;no&quot;</span><br><span class="line">BOOTPROTO&#x3D;&quot;static&quot;</span><br><span class="line">DEFROUTE&#x3D;&quot;yes&quot;</span><br><span class="line">IPV4_FAILURE_FATAL&#x3D;&quot;no&quot;</span><br><span class="line">IPV6INIT&#x3D;&quot;yes&quot;</span><br><span class="line">IPV6_AUTOCONF&#x3D;&quot;yes&quot;</span><br><span class="line">IPV6_DEFROUTE&#x3D;&quot;yes&quot;</span><br><span class="line">IPV6_FAILURE_FATAL&#x3D;&quot;no&quot;</span><br><span class="line">IPV6_ADDR_GEN_MODE&#x3D;&quot;stable-privacy&quot;</span><br><span class="line">NAME&#x3D;&quot;ens33&quot;</span><br><span class="line">UUID&#x3D;&quot;c3ba1376-66b3-4fa7-804d-528c7f4fea6e&quot;</span><br><span class="line">DEVICE&#x3D;&quot;ens33&quot;</span><br><span class="line">ONBOOT&#x3D;&quot;yes&quot;</span><br><span class="line">IPADDR&#x3D;192.168.187.200</span><br><span class="line">NETMASK&#x3D;255.255.255.0</span><br><span class="line">GATEWAY&#x3D;192.168.187.1</span><br><span class="line">DNS1&#x3D;114.114.114.114</span><br><span class="line">DNS2&#x3D;8.8.8.8</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>重启网络 <code>systemctl restart network</code></p>
+</li>
+</ol>
+<h3 id="SSH登录不上"><a href="#SSH登录不上" class="headerlink" title="SSH登录不上"></a>SSH登录不上</h3><p>用<code>Termius</code>连接服务器，能连接，却无法输入？？？</p>
+<p>搜索了一下，是说SSH会进行DNS反向解析。</p>
+<p>基于我刚刚的配置，是找不到的。于是就登录不上。</p>
+<p>有两种解决方法</p>
+<ol>
+<li><p>将网卡配置里的<code>DNS</code>设置为网关，重启网络；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">IPADDR&#x3D;192.168.187.200</span><br><span class="line">NETMASK&#x3D;255.255.255.0</span><br><span class="line">GATEWAY&#x3D;192.168.187.1</span><br><span class="line">DNS1&#x3D;192.168.187.1</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改sshd的配置文件<code>/etc/ssh/sshd_config</code>，将<code>UseDNS</code>设置为no；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UseDNS no</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>搞定啦，虽然只是一个小问题。同时又学到新东西啦。</p>
+
+      
+      <!-- reward -->
+      
+    </div>
+    
+    
+      <!-- copyright -->
+      
+    <footer class="article-footer">
+      
+      
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li></ul>
+
+
+    </footer>
+
+  </div>
+
+  
+
+  
+
+  
+
+</article>
+    
+    
+      
     <article id="post-host-secruity" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
@@ -976,11 +1084,14 @@
 </article>
     
     
-      
-    
   </article>
   
 
+  
+  <nav class="page-nav">
+    
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/">下一页</a>
+  </nav>
   
 </section>
 </div>
