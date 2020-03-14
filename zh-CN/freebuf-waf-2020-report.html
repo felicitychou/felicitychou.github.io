@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    只不过是设置静态IP，SSH却连不上了？ |  FunFen Channel
+    freebuf-waf-2020-report |  FunFen Channel
   </title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   
@@ -33,7 +33,7 @@
   <div id="app">
     <main class="content">
       <section class="outer">
-  <article id="post-centos-set-static-ip" class="article article-type-post" itemscope
+  <article id="post-freebuf-waf-2020-report" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -41,7 +41,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  只不过是设置静态IP，SSH却连不上了？
+  freebuf-waf-2020-report
 </h1>
   
 
@@ -50,12 +50,12 @@
 
     
     <div class="article-meta">
-      <a href="/zh-CN/centos-set-static-ip.html" class="article-date">
-  <time datetime="2020-03-12T15:55:27.000Z" itemprop="datePublished">2020-03-12</time>
+      <a href="/zh-CN/freebuf-waf-2020-report.html" class="article-date">
+  <time datetime="2020-03-13T15:10:16.000Z" itemprop="datePublished">2020-03-13</time>
 </a>
       
   <div class="article-category">
-    <a class="article-category-link" href="/categories/%E7%BB%8F%E9%AA%8C%E5%88%86%E4%BA%AB/">经验分享</a>
+    <a class="article-category-link" href="/categories/%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/">学习总结</a>
   </div>
 
       
@@ -65,7 +65,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">732字</span>
+            <span class="post-count">1.7k字</span>
         </span>
     </span>
 
@@ -74,7 +74,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">3分钟</span>
+            <span class="post-count">6分钟</span>
         </span>
     </span>
 </div>
@@ -93,42 +93,171 @@
       
 
       
-      <p>由于我的CentOS虚拟机是通过DHCP动态获得IP地址，时不时就变一下。</p>
-<p>导致保存好的SSH配置老是要随着更改。</p>
-<p>我终于忍不住，决定配置静态IP。</p>
-<p>配置好IP，SSH居然连不上了？？？</p>
-<p>开头先感谢下列参考文章的作者，帮助我解决问题<del>~</del></p>
-<blockquote>
-<p><a href="https://www.cnblogs.com/yhongji/p/9336247.html" target="_blank" rel="noopener">centos7配置IP地址</a></p>
-<p><a href="https://www.jianshu.com/p/0bdd3116736f" target="_blank" rel="noopener">CentOS 修改静态IP，SSH 连接异常的问题。</a></p>
-<p><a href="[https://blog.csdn.net/weixin_42715413/article/details/84643885">解决ssh连接慢，挂起在SSH2_MSG_SERVICE_ACCEPT信息之后很久的问题</a></p>
-</blockquote>
-<h3 id="配置静态IP"><a href="#配置静态IP" class="headerlink" title="配置静态IP"></a>配置静态IP</h3><ol>
-<li><p>查询网卡信息，确定要更改的网卡名称为<code>ens33</code>。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# ip addr</span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 ::1/128 scope host </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">2: ens33: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc pfifo_fast state UP group default qlen 1000</span><br><span class="line">    link/ether 00:0c:29:27:9e:d1 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.187.200/24 brd 192.168.187.255 scope global noprefixroute ens33</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">    inet6 fe80::d83c:c0cb:f482:e7c0/64 scope link noprefixroute </span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">3: virbr0: &lt;NO-CARRIER,BROADCAST,MULTICAST,UP&gt; mtu 1500 qdisc noqueue state DOWN group default qlen 1000</span><br><span class="line">    link/ether 52:54:00:4a:82:31 brd ff:ff:ff:ff:ff:ff</span><br><span class="line">    inet 192.168.122.1/24 brd 192.168.122.255 scope global virbr0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">4: virbr0-nic: &lt;BROADCAST,MULTICAST&gt; mtu 1500 qdisc pfifo_fast master virbr0 state DOWN group default qlen 1000</span><br><span class="line">    link/ether 52:54:00:4a:82:31 brd ff:ff:ff:ff:ff:ff</span><br></pre></td></tr></table></figure>
+      <p>准备好好了解产品的本人，</p>
+<p>看到最近新出《FreeBuf企业安全系列之2020国内WAF产品研究报告》。</p>
+<p>当然是要仔细阅读，总结归纳一下。</p>
+<h3 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h3><ul>
+<li><p>部署WAF的必要性</p>
+<ul>
+<li>开发时遗留问题：应用程序本身有问题；</li>
+<li>Web中间件漏洞：使用了存在漏洞的组件；</li>
+<li>运维管理中的问题：错误配置、重要文件泄露等；</li>
+<li>破坏手段多样：攻击手段多样化；</li>
+</ul>
 </li>
-<li><p>修改网卡配置，把<code>BOOTPROTO=&quot;dhcp&quot;</code>改为<code>BOOTPROTO=&quot;static&quot;</code>，增加<code>IPADDR</code>、<code>NETMASK</code>、<code>GATEWAY</code>、<code>DNS</code>，保存文件。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# nano &#x2F;etc&#x2F;sysconfig&#x2F;network-scripts&#x2F;ifcfg-ens33</span><br><span class="line"></span><br><span class="line">修改前</span><br><span class="line">TYPE&#x3D;&quot;Ethernet&quot;</span><br><span class="line">PROXY_METHOD&#x3D;&quot;none&quot;</span><br><span class="line">BROWSER_ONLY&#x3D;&quot;no&quot;</span><br><span class="line">BOOTPROTO&#x3D;&quot;dhcp&quot;</span><br><span class="line">DEFROUTE&#x3D;&quot;yes&quot;</span><br><span class="line">IPV4_FAILURE_FATAL&#x3D;&quot;no&quot;</span><br><span class="line">IPV6INIT&#x3D;&quot;yes&quot;</span><br><span class="line">IPV6_AUTOCONF&#x3D;&quot;yes&quot;</span><br><span class="line">IPV6_DEFROUTE&#x3D;&quot;yes&quot;</span><br><span class="line">IPV6_FAILURE_FATAL&#x3D;&quot;no&quot;</span><br><span class="line">IPV6_ADDR_GEN_MODE&#x3D;&quot;stable-privacy&quot;</span><br><span class="line">NAME&#x3D;&quot;ens33&quot;</span><br><span class="line">UUID&#x3D;&quot;c3ba1376-66b3-4fa7-804d-528c7f4fea6e&quot;</span><br><span class="line">DEVICE&#x3D;&quot;ens33&quot;</span><br><span class="line">ONBOOT&#x3D;&quot;yes&quot;</span><br><span class="line"></span><br><span class="line">修改后</span><br><span class="line">YPE&#x3D;&quot;Ethernet&quot;</span><br><span class="line">PROXY_METHOD&#x3D;&quot;none&quot;</span><br><span class="line">BROWSER_ONLY&#x3D;&quot;no&quot;</span><br><span class="line">BOOTPROTO&#x3D;&quot;static&quot;</span><br><span class="line">DEFROUTE&#x3D;&quot;yes&quot;</span><br><span class="line">IPV4_FAILURE_FATAL&#x3D;&quot;no&quot;</span><br><span class="line">IPV6INIT&#x3D;&quot;yes&quot;</span><br><span class="line">IPV6_AUTOCONF&#x3D;&quot;yes&quot;</span><br><span class="line">IPV6_DEFROUTE&#x3D;&quot;yes&quot;</span><br><span class="line">IPV6_FAILURE_FATAL&#x3D;&quot;no&quot;</span><br><span class="line">IPV6_ADDR_GEN_MODE&#x3D;&quot;stable-privacy&quot;</span><br><span class="line">NAME&#x3D;&quot;ens33&quot;</span><br><span class="line">UUID&#x3D;&quot;c3ba1376-66b3-4fa7-804d-528c7f4fea6e&quot;</span><br><span class="line">DEVICE&#x3D;&quot;ens33&quot;</span><br><span class="line">ONBOOT&#x3D;&quot;yes&quot;</span><br><span class="line">IPADDR&#x3D;192.168.187.200</span><br><span class="line">NETMASK&#x3D;255.255.255.0</span><br><span class="line">GATEWAY&#x3D;192.168.187.1</span><br><span class="line">DNS1&#x3D;114.114.114.114</span><br><span class="line">DNS2&#x3D;8.8.8.8</span><br></pre></td></tr></table></figure>
+<li><p>业务场景及功能</p>
+<ul>
+<li>精准访问控制：机密性和完整性保护</li>
+<li>Web漏洞攻击防护：就算程序有漏洞，也不会攻击成功。</li>
+<li>CC攻击防护：DDoS的一类，最像正常请求，不一定是正常用户发起的。</li>
+<li>0day漏洞缓解：在未修复漏洞的情况下，下发虚拟补丁进行防护</li>
+</ul>
 </li>
-<li><p>重启网络 <code>systemctl restart network</code></p>
+<li><p>WAF通常具备的功能</p>
+<ul>
+<li>HTTP、HTTPS协议的解析和过滤，如协议不同版本的识别和解析、协议参数长度限制等</li>
+<li>各类Web攻击防护，如SQL注入、XSS跨站、CSRF、网页后门等；</li>
+<li>各种自动化攻击防护，如暴力破解、撞库、批量注册、自动发帖的等；</li>
+<li>阻止其它常见威胁，如：爬虫、0day攻击、代码分析、嗅探、数据篡改、越权访问、敏感信息泄露、应用层DDoS、远程恶意包含、盗链、越权、扫描等</li>
+<li>其他管理与审计，如安全配置、日志分析、报表与统计功能等。</li>
+</ul>
 </li>
-</ol>
-<h3 id="SSH登录不上"><a href="#SSH登录不上" class="headerlink" title="SSH登录不上"></a>SSH登录不上</h3><p>用<code>Termius</code>连接服务器，能连接，却无法输入？？？</p>
-<p>搜索了一下，是说SSH会进行DNS反向解析。</p>
-<p>基于我刚刚的配置，是找不到的。于是就登录不上。</p>
-<p>有两种解决方法</p>
-<ol>
-<li><p>将网卡配置里的<code>DNS</code>设置为网关，重启网络；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">IPADDR&#x3D;192.168.187.200</span><br><span class="line">NETMASK&#x3D;255.255.255.0</span><br><span class="line">GATEWAY&#x3D;192.168.187.1</span><br><span class="line">DNS1&#x3D;192.168.187.1</span><br></pre></td></tr></table></figure>
+<li><p>WAF的分类</p>
+<ul>
+<li>硬件型<ul>
+<li>优点：以多种方式（如透明桥接模式、旁路模式、反向代理等）、性能好、功能全面、支持多种模式部署等</li>
+<li>缺点：价格比较贵</li>
+<li>常见厂商：绿盟、安恒、启明星辰</li>
+</ul>
 </li>
-<li><p>修改sshd的配置文件<code>/etc/ssh/sshd_config</code>，将<code>UseDNS</code>设置为no；</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">UseDNS no</span><br></pre></td></tr></table></figure>
-
-
-
+<li>软件型：纯软件实现；<ul>
+<li>优点：安装简单、容易使用、成本低</li>
+<li>缺点：性能限制、可能存在兼容性、安全等问题</li>
+<li>常见产品：ModSecurity、Naxsi、安全狗等</li>
+</ul>
 </li>
-</ol>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>搞定啦，虽然只是一个小问题。同时又学到新东西啦。</p>
+<li>云WAF<ul>
+<li>代表厂商：阿里云、腾讯云、深信服云WAF、Imperva WAF</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>WAF部署：用户请求先经过WAF，再到达网站。</p>
+<ul>
+<li>部署模式<ul>
+<li>反向代理：用户访问时，直接访问到WAF，如果是恶意请求、攻击，访问会被直接拦截，正常的访问WAF才会向服务器转发请求。</li>
+<li>透明代理：通常只有硬件WAF才会部署为透明代理。透明代理模式下，访问会直接指向真实服务器，但流量到达服务器之前，会隐性被WAF过滤，只有正常的访问才会被放行到服务器。</li>
+<li>旁路：没有防护能力，没有监听能力。</li>
+</ul>
+</li>
+<li>使用与调试<ul>
+<li>传统WAF：维护大量设置、调整规则。</li>
+<li>云WAF：将云WAF绑定到虚拟主机，然后通过控制台设置页面，开启WAF开关。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>企业不满意WAF的地方</p>
+<ul>
+<li>防御检出有效度</li>
+<li>影响业务性能</li>
+<li>WAF规则维护成本高</li>
+<li>云WAF数据隐私保护问题</li>
+<li>费用昂贵</li>
+</ul>
+</li>
+<li><p>企业希望WAF增强的能力</p>
+<ul>
+<li>业务安全防护能力</li>
+<li>情报能力</li>
+<li>上下文理解能力</li>
+<li>AI能力</li>
+<li>协同能力</li>
+<li>语义分析能力</li>
+<li>审计举证能力</li>
+</ul>
+</li>
+<li><p>WAF产品应该包含哪些新功能</p>
+<ul>
+<li>集成和共享威胁情报库</li>
+<li>针对企业定向攻击事件的分析</li>
+<li>通过扫描器验证验证Web攻击数据的有效性</li>
+<li>页面混淆，动态防御</li>
+<li>容器部署方式</li>
+<li>集成或联动RASP分析</li>
+<li>流量审计</li>
+</ul>
+</li>
+<li><p>新兴市场的挑战</p>
+<ul>
+<li>对非OWASP TOP 10攻击防护响应较慢：传统厂商通病，因为不熟悉业务，对于攻击场景缺乏全面的认识。</li>
+<li>实体WAF转向获取服务：企业的开源节流，降低成本。</li>
+<li>提供额外的解决方案，比如应用层DDoS防护、bot缓解，甚至CDN等非安全功能，这类叫WAAP：WAF之前只是解决一些单点的问题，现在开始从保障Web应用程序整体可用性、保密性、完整性来设计产品功能，是一个很好的进步。就像杀毒软件演变成现在的电脑管家类似。</li>
+<li>厂商着力于更为复杂的分析能力、自动化的调整机制。</li>
+</ul>
+</li>
+<li><p>国内主流WAF产品名录</p>
+<ul>
+<li>硬件类：29</li>
+<li>软件类：13</li>
+<li>云WAF：57</li>
+</ul>
+</li>
+<li><p>商业产品的比较（另外写一篇详细的）</p>
+</li>
+<li><p>开源方案：可以用来研究具体技术细节</p>
+<ul>
+<li><p>ModSecurity：支持Apache、IIS和Nginx</p>
+<ul>
+<li>功能：<ul>
+<li>Cross Site Scripting (XSS)：阻止跨站脚本攻击</li>
+<li>Local File Inclusion (LFI)：阻止利用本地文件包含漏洞进行攻击</li>
+<li>Remote File Inclusione(RFI)：阻止利用远程文件包含漏洞进行攻击</li>
+<li>Remote Code Execution (RCE)：阻止利用远程命令执行漏洞进行攻击</li>
+<li>PHP Code Injectiod：阻止PHP代码注入</li>
+<li>HTTP Protocol Violations：阻止违反HTTP协议的恶意访问</li>
+<li>HTTPoxy：阻止利用远程代理感染漏洞进行攻击</li>
+<li>Sshllshock：阻止利用Shellshock漏洞进行攻击</li>
+<li>Session Fixation：阻止利用Session会话ID不变的漏洞进行攻击</li>
+<li>Scanner Detection：阻止黑客扫描网站</li>
+<li>Metadata/Error Leakages：阻止源代码/错误信息泄露</li>
+<li>Project Honey Pot Blacklist：蜜罐项目黑名单</li>
+<li>GeoIP Country Blocking：根据判断IP地址归属地来进行IP阻断</li>
+</ul>
+</li>
+<li>优势：完美兼容nginx，支持OWASP规则，免费</li>
+<li>劣势：不支持检查响应体的规则，OWASP中相关规则是95X；不支持OWASP核心规则集DDoS规则REQUEST-912-DOS- PROTECTION.conf，nginx本身支持配置DDoS限制；不支持在审计日志中包含请求和响应主体。</li>
+</ul>
+</li>
+<li><p>ShareWAF</p>
+<ul>
+<li><p>功能</p>
+<ul>
+<li>传统WAF功能：防SQL中注入、防扫描等</li>
+<li>浏览器端WAF、JS代码保护、动态变形元素、3D态势感</li>
+</ul>
+<p>知、传输加密、大数据防护等。</p>
+<ul>
+<li>部分开源：浏览器端WAF、负载均衡功能、守护进程功能、反爬虫功能。</li>
+</ul>
+</li>
+<li><p>优势：创新、开源</p>
+</li>
+<li><p>劣势：稳定性、兼容性</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>下一代WAF类的产品，应该要从保障Web应用程序整体可用性、保密性、完整性来设计产品功能。</p>
+<ul>
+<li>基于Web应用程序本身的漏洞，最好还是从代码层面解决，WAF只是多加一个保险。同时也可以利用WAF捕获到的攻击，来测试Web应用程序的安全性。</li>
+<li>而类似正常请求的攻击，WAF需要起到较大的防护作用。</li>
+<li>WAF添加大量新功能的同时尽可能减少对Web应用系统正常访问的影响。</li>
+<li>产品的安装、使用、运维必须要简单明了，客户才能好好使用。（P.S：如果对客户要求较高的技术水平，那我觉得这个产品有可能是来搞事情的<del>~</del></li>
+<li>区别正常请求和异常请求，要从多维度来分析，包括源、请求数据、请求频率等。</li>
+</ul>
 
       
       <!-- reward -->
@@ -191,14 +320,14 @@
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://felicitychou.github.io/zh-CN/centos-set-static-ip.html" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://felicitychou.github.io/zh-CN/freebuf-waf-2020-report.html" alt="微信分享二维码">
     </div>
 </div>
 
 <div id="share-mask"></div>
       
       
-  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CentOS/" rel="tag">CentOS</a></li></ul>
+  <ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/WAF/" rel="tag">WAF</a></li></ul>
 
 
     </footer>
@@ -209,19 +338,10 @@
   
   <nav class="article-nav">
     
-      <a href="/zh-CN/freebuf-waf-2020-report.html" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            freebuf-waf-2020-report
-          
-        </div>
-      </a>
     
-    
-      <a href="/zh-CN/host-secruity.html" class="article-nav-link">
+      <a href="/zh-CN/centos-set-static-ip.html" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">主机安全、端点防护、HIDS、EDR、CWPP？</div>
+        <div class="article-nav-title">只不过是设置静态IP，SSH却连不上了？</div>
       </a>
     
   </nav>
