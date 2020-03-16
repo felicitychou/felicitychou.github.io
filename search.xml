@@ -1,10 +1,173 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>DVWA - 命令注入（Command Injection）代码分析与漏洞利用</title>
+    <url>/zh-CN/dvwa-commandinjection.html</url>
+    <content><![CDATA[<h2 id="DVWA-Command-injection-命令注入"><a href="#DVWA-Command-injection-命令注入" class="headerlink" title="DVWA - Command injection 命令注入"></a>DVWA - Command injection 命令注入</h2><h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><ul>
+<li>前端执行系统命令，比如执行<code>ping</code></li>
+</ul>
+<h3 id="输入点"><a href="#输入点" class="headerlink" title="输入点"></a>输入点</h3><ul>
+<li>系统命令的参数</li>
+</ul>
+<h3 id="代码逻辑"><a href="#代码逻辑" class="headerlink" title="代码逻辑"></a>代码逻辑</h3><ul>
+<li><p>获取参数ip的值</p>
+</li>
+<li><p>判断服务器操作系统是Windows还是*nix</p>
+</li>
+<li><p>根据不同的操作系统，执行不同的<code>ping</code>命令</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; *nix</span><br><span class="line">ping  -c 4 ip</span><br><span class="line">&#x2F;&#x2F; Windows</span><br><span class="line">ping ip</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h3 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h3><blockquote>
+<p><a href="https://www.freebuf.com/articles/web/116714.html" target="_blank" rel="noopener">新手指南：DVWA-1.9全级别教程之Command Injection</a></p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="Low"><a href="#Low" class="headerlink" title="Low"></a>Low</h2><h3 id="源代码"><a href="#源代码" class="headerlink" title="源代码"></a>源代码</h3><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Submit'</span> ]  ) ) &#123;</span><br><span class="line">    <span class="comment">// Get input</span></span><br><span class="line">    $target = $_REQUEST[ <span class="string">'ip'</span> ];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Determine OS and execute the ping command.</span></span><br><span class="line">    <span class="keyword">if</span>( stristr( php_uname( <span class="string">'s'</span> ), <span class="string">'Windows NT'</span> ) ) &#123;</span><br><span class="line">        <span class="comment">// Windows</span></span><br><span class="line">        $cmd = shell_exec( <span class="string">'ping  '</span> . $target );</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// *nix</span></span><br><span class="line">        $cmd = shell_exec( <span class="string">'ping  -c 4 '</span> . $target );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Feedback for the end user</span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;&#123;$cmd&#125;&lt;/pre&gt;"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><ul>
+<li>漏洞原因：直接拼接用户的输入；</li>
+<li>攻击手法：使用命令拼接符执行恶意命令，命令拼接符和恶意命令要对应服务器的操作系统；</li>
+</ul>
+<h3 id="实操"><a href="#实操" class="headerlink" title="实操"></a>实操</h3><ul>
+<li><p>输入：<code>127.0.0.1;id</code>（可以将<code>id</code>换成其它想执行的系统命令）</p>
+</li>
+<li><p>输出</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.</span><br><span class="line">64 bytes from 127.0.0.1: icmp_seq&#x3D;1 ttl&#x3D;64 time&#x3D;0.019 ms</span><br><span class="line">64 bytes from 127.0.0.1: icmp_seq&#x3D;2 ttl&#x3D;64 time&#x3D;0.029 ms</span><br><span class="line">64 bytes from 127.0.0.1: icmp_seq&#x3D;3 ttl&#x3D;64 time&#x3D;0.046 ms</span><br><span class="line">64 bytes from 127.0.0.1: icmp_seq&#x3D;4 ttl&#x3D;64 time&#x3D;0.266 ms</span><br><span class="line"></span><br><span class="line">--- 127.0.0.1 ping statistics ---</span><br><span class="line">4 packets transmitted, 4 received, 0% packet loss, time 3009ms</span><br><span class="line">rtt min&#x2F;avg&#x2F;max&#x2F;mdev &#x3D; 0.019&#x2F;0.090&#x2F;0.266&#x2F;0.102 ms</span><br><span class="line">uid&#x3D;48(apache) gid&#x3D;48(apache) groups&#x3D;48(apache) context&#x3D;system_u:system_r:httpd_t:s0</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h2 id="Medium"><a href="#Medium" class="headerlink" title="Medium"></a>Medium</h2><h3 id="源代码-1"><a href="#源代码-1" class="headerlink" title="源代码"></a>源代码</h3><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Submit'</span> ]  ) ) &#123;</span><br><span class="line">    <span class="comment">// Get input</span></span><br><span class="line">    $target = $_REQUEST[ <span class="string">'ip'</span> ];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Set blacklist</span></span><br><span class="line">    $substitutions = <span class="keyword">array</span>(</span><br><span class="line">        <span class="string">'&amp;&amp;'</span> =&gt; <span class="string">''</span>,</span><br><span class="line">        <span class="string">';'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Remove any of the charactars in the array (blacklist).</span></span><br><span class="line">    $target = str_replace( array_keys( $substitutions ), $substitutions, $target );</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Determine OS and execute the ping command.</span></span><br><span class="line">    <span class="keyword">if</span>( stristr( php_uname( <span class="string">'s'</span> ), <span class="string">'Windows NT'</span> ) ) &#123;</span><br><span class="line">        <span class="comment">// Windows</span></span><br><span class="line">        $cmd = shell_exec( <span class="string">'ping  '</span> . $target );</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// *nix</span></span><br><span class="line">        $cmd = shell_exec( <span class="string">'ping  -c 4 '</span> . $target );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Feedback for the end user</span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;&#123;$cmd&#125;&lt;/pre&gt;"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-1"><a href="#分析-1" class="headerlink" title="分析"></a>分析</h3><ul>
+<li><p>防护手段：增加特殊符号过滤；</p>
+</li>
+<li><p>漏洞原因：参数过滤不严谨，没有过滤<code>|</code>、<code>||</code>；</p>
+</li>
+<li><p>攻击手法：使用未过滤的命令拼接符；</p>
+</li>
+</ul>
+<h3 id="实操-1"><a href="#实操-1" class="headerlink" title="实操"></a>实操</h3><ul>
+<li><p>输入：<code>x || id</code>（可以将<code>id</code>换成其它想执行的系统命令）</p>
+</li>
+<li><p>输出</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">uid&#x3D;48(apache) gid&#x3D;48(apache) groups&#x3D;48(apache) context&#x3D;system_u:system_r:httpd_t:s0</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h2 id="High"><a href="#High" class="headerlink" title="High"></a>High</h2><h3 id="源代码-2"><a href="#源代码-2" class="headerlink" title="源代码"></a>源代码</h3><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Submit'</span> ]  ) ) &#123;</span><br><span class="line">    <span class="comment">// Get input</span></span><br><span class="line">    $target = trim($_REQUEST[ <span class="string">'ip'</span> ]);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Set blacklist</span></span><br><span class="line">    $substitutions = <span class="keyword">array</span>(</span><br><span class="line">        <span class="string">'&amp;'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">        <span class="string">';'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">        <span class="string">'| '</span> =&gt; <span class="string">''</span>,</span><br><span class="line">        <span class="string">'-'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">        <span class="string">'$'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">        <span class="string">'('</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">        <span class="string">')'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">        <span class="string">'`'</span>  =&gt; <span class="string">''</span>,</span><br><span class="line">        <span class="string">'||'</span> =&gt; <span class="string">''</span>,</span><br><span class="line">    );</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Remove any of the charactars in the array (blacklist).</span></span><br><span class="line">    $target = str_replace( array_keys( $substitutions ), $substitutions, $target );</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Determine OS and execute the ping command.</span></span><br><span class="line">    <span class="keyword">if</span>( stristr( php_uname( <span class="string">'s'</span> ), <span class="string">'Windows NT'</span> ) ) &#123;</span><br><span class="line">        <span class="comment">// Windows</span></span><br><span class="line">        $cmd = shell_exec( <span class="string">'ping  '</span> . $target );</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// *nix</span></span><br><span class="line">        $cmd = shell_exec( <span class="string">'ping  -c 4 '</span> . $target );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Feedback for the end user</span></span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;&#123;$cmd&#125;&lt;/pre&gt;"</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-2"><a href="#分析-2" class="headerlink" title="分析"></a>分析</h3><ul>
+<li><p>防护手段：过滤更多的特殊符号；</p>
+</li>
+<li><p>漏洞原因：参数过滤不严谨，没有过滤<code>|</code>；</p>
+</li>
+<li><p>攻击手法：使用未过滤的命令拼接符；</p>
+</li>
+</ul>
+<h3 id="实操-2"><a href="#实操-2" class="headerlink" title="实操"></a>实操</h3><ul>
+<li><p>输入：<code>x|id</code></p>
+</li>
+<li><p>输出：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">uid&#x3D;48(apache) gid&#x3D;48(apache) groups&#x3D;48(apache) context&#x3D;system_u:system_r:httpd_t:s0</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h2 id="Impossible"><a href="#Impossible" class="headerlink" title="Impossible"></a>Impossible</h2><h3 id="源代码-3"><a href="#源代码-3" class="headerlink" title="源代码"></a>源代码</h3><figure class="highlight php"><table><tr><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span>( <span class="keyword">isset</span>( $_POST[ <span class="string">'Submit'</span> ]  ) ) &#123;</span><br><span class="line">    <span class="comment">// Check Anti-CSRF token</span></span><br><span class="line">    checkToken( $_REQUEST[ <span class="string">'user_token'</span> ], $_SESSION[ <span class="string">'session_token'</span> ], <span class="string">'index.php'</span> );</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Get input</span></span><br><span class="line">    $target = $_REQUEST[ <span class="string">'ip'</span> ];</span><br><span class="line">    $target = stripslashes( $target );</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Split the IP into 4 octects</span></span><br><span class="line">    $octet = explode( <span class="string">"."</span>, $target );</span><br><span class="line"></span><br><span class="line">    <span class="comment">// Check IF each octet is an integer</span></span><br><span class="line">    <span class="keyword">if</span>( ( is_numeric( $octet[<span class="number">0</span>] ) ) &amp;&amp; ( is_numeric( $octet[<span class="number">1</span>] ) ) &amp;&amp; ( is_numeric( $octet[<span class="number">2</span>] ) ) &amp;&amp; ( is_numeric( $octet[<span class="number">3</span>] ) ) &amp;&amp; ( sizeof( $octet ) == <span class="number">4</span> ) ) &#123;</span><br><span class="line">        <span class="comment">// If all 4 octets are int's put the IP back together.</span></span><br><span class="line">        $target = $octet[<span class="number">0</span>] . <span class="string">'.'</span> . $octet[<span class="number">1</span>] . <span class="string">'.'</span> . $octet[<span class="number">2</span>] . <span class="string">'.'</span> . $octet[<span class="number">3</span>];</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Determine OS and execute the ping command.</span></span><br><span class="line">        <span class="keyword">if</span>( stristr( php_uname( <span class="string">'s'</span> ), <span class="string">'Windows NT'</span> ) ) &#123;</span><br><span class="line">            <span class="comment">// Windows</span></span><br><span class="line">            $cmd = shell_exec( <span class="string">'ping  '</span> . $target );</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">// *nix</span></span><br><span class="line">            $cmd = shell_exec( <span class="string">'ping  -c 4 '</span> . $target );</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Feedback for the end user</span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">"&lt;pre&gt;&#123;$cmd&#125;&lt;/pre&gt;"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// Ops. Let the user name theres a mistake</span></span><br><span class="line">        <span class="keyword">echo</span> <span class="string">'&lt;pre&gt;ERROR: You have entered an invalid IP.&lt;/pre&gt;'</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Generate Anti-CSRF token</span></span><br><span class="line">generateSessionToken();</span><br><span class="line"></span><br><span class="line"><span class="meta">?&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="分析-3"><a href="#分析-3" class="headerlink" title="分析"></a>分析</h3><ul>
+<li>防护手段：<ul>
+<li>增加 Anti-CSRF token；</li>
+<li>严格的参数处理，确保ip参数为x.x.x.x，其中x必须为数字。</li>
+</ul>
+</li>
+</ul>
+<h2 id="补充知识"><a href="#补充知识" class="headerlink" title="补充知识"></a>补充知识</h2><ul>
+<li><p><a href="https://www.php.net/manual/zh/function.php-uname.php" target="_blank" rel="noopener"><code>php_uname</code></a> — 返回运行 PHP 的系统的有关信息</p>
+<blockquote>
+<p>php_uname ([ string $mode = “a” ] ) : string</p>
+<p>mode是单个字符，用于定义要返回什么信息：<br>‘a’：此为默认。包含序列”s n r v m”里的所有模式。<br>‘s’：操作系统名称。例如：FreeBSD。<br>‘n’：主机名。例如：localhost.example.com。<br>‘r’：版本名称，例如：5.1.2-RELEASE。<br>‘v’：版本信息。操作系统之间有很大的不同。<br>‘m’：机器类型。例如：i386。</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">echo php_uname();</span><br><span class="line">echo PHP_OS;</span><br><span class="line">&#x2F;* 比如有些会输出：</span><br><span class="line">Linux localhost 2.4.21-0.13mdk #1 Fri Mar 14 15:08:06 EST 2003 i686</span><br><span class="line">Linux</span><br><span class="line">FreeBSD localhost 3.2-RELEASE #15: Mon Dec 17 08:46:02 GMT 2001</span><br><span class="line">FreeBSD</span><br><span class="line">Windows NT XN1 5.1 build 2600</span><br><span class="line">WINNT</span><br><span class="line">*&#x2F;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>命令拼接符</p>
+<ul>
+<li>Windows<ul>
+<li>A&amp;&amp;B，表示A命令执行成功，然后执行B命令。</li>
+<li>A&amp;B，表示简单的拼接，A命令和B命令没有关系。</li>
+<li>A|B，表示A命令的输出，作为B命令的输入执行。</li>
+<li>A||B，表示A命令执行失败，然后才执行B命令。</li>
+</ul>
+</li>
+<li>Linux<ul>
+<li>除了Windows，还可以用<code>；</code>分隔开两个命令。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><a href="https://www.php.net/str_replace" target="_blank" rel="noopener"><code>str_replace</code></a> — 子字符串替换</p>
+<blockquote>
+<p>str_replace ( mixed $search , mixed ​$replace , mixed $subject [, int &amp;​$count ] ) : mixed</p>
+<p>该函数返回一个字符串或者数组。该字符串或数组是将 subject 中全部的 search 都被 replace 替换之后的结果。如果没有一些特殊的替换需求（比如正则表达式），你应该使用该函数替换 ereg_replace() 和 preg_replace()。</p>
+<p>参数</p>
+<p>如果 search 和 replace 为数组，那么 str_replace() 将对 subject 做二者的映射替换。如果 replace 的值的个数少于 search 的个数，多余的替换将使用空字符串来进行。如果 search 是一个数组而 replace 是一个字符串，那么 search 中每个元素的替换将始终使用这个字符串。该转换不会改变大小写。</p>
+<p>如果 search 和 replace 都是数组，它们的值将会被依次处理。</p>
+<p>search：查找的目标值，也就是 needle。一个数组可以指定多个目标。</p>
+<p>replace：search 的替换值。一个数组可以被用来指定多重替换。</p>
+<p>subject：执行替换的数组或者字符串。也就是 haystack。</p>
+<p>如果 subject 是一个数组，替换操作将遍历整个 subject，返回值也将是一个数组。</p>
+<p>count：如果被指定，它的值将被设置为替换发生的次数。</p>
+<p>返回值：该函数返回替换后的数组或者字符串。</p>
+</blockquote>
+</li>
+<li><p><a href="https://www.php.net/manual/zh/ref.exec.php" target="_blank" rel="noopener">程序执行函数</a></p>
+<ul>
+<li><a href="https://www.php.net/manual/zh/function.escapeshellarg.php" target="_blank" rel="noopener">escapeshellarg</a> — 把字符串转码为可以在 shell 命令里使用的参数</li>
+<li><a href="https://www.php.net/manual/zh/function.escapeshellcmd.php" target="_blank" rel="noopener">escapeshellcmd</a> — shell 元字符转义</li>
+<li><strong><a href="https://www.php.net/manual/zh/function.exec.php" target="_blank" rel="noopener">exec</a> — 执行一个外部程序</strong></li>
+<li><strong><a href="https://www.php.net/manual/zh/function.passthru.php" target="_blank" rel="noopener">passthru</a> — 执行外部程序并且显示原始输出</strong></li>
+<li><a href="https://www.php.net/manual/zh/function.proc-close.php" target="_blank" rel="noopener">proc_close</a> — 关闭由 proc_open 打开的进程并且返回进程退出码</li>
+<li><a href="https://www.php.net/manual/zh/function.proc-get-status.php" target="_blank" rel="noopener">proc_get_status</a> — 获取由 proc_open 函数打开的进程的信息</li>
+<li><a href="https://www.php.net/manual/zh/function.proc-nice.php" target="_blank" rel="noopener">proc_nice</a> — 修改当前进程的优先级</li>
+<li><a href="https://www.php.net/manual/zh/function.proc-open.php" target="_blank" rel="noopener">proc_open</a> — 执行一个命令，并且打开用来输入/输出的文件指针。</li>
+<li><a href="https://www.php.net/manual/zh/function.proc-terminate.php" target="_blank" rel="noopener">proc_terminate</a> — 终止 proc_open 打开的进程</li>
+<li><strong><a href="https://www.php.net/manual/zh/function.shell-exec.php" target="_blank" rel="noopener">shell_exec</a> — 通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。</strong></li>
+<li><strong><a href="https://www.php.net/manual/zh/function.system.php" target="_blank" rel="noopener">system</a> — 执行外部程序，并且显示输出</strong></li>
+</ul>
+</li>
+<li><p><a href="https://www.php.net/manual/zh/language.operators.execution.php" target="_blank" rel="noopener">执行运算符</a></p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">PHP 支持一个执行运算符：反引号（&#96;&#96;）。注意这不是单引号！PHP 将尝试将反引号中的内容作为 shell 命令来执行，并将其输出信息返回（即，可以赋给一个变量而不是简单地丢弃到标准输出）。使用反引号运算符“&#96;”的效果与函数 shell_exec() 相同。</span><br><span class="line"></span><br><span class="line">反引号运算符在激活了安全模式或者关闭了 shell_exec() 时是无效的。</span><br><span class="line">与其它某些语言不同，反引号不能在双引号字符串中使用。</span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>命令注入的防护方法：<strong>核心就是只允许正确格式的参数</strong></p>
+<ul>
+<li>参数检查</li>
+<li>过滤命令拼接符</li>
+</ul>
+<p><strong>最好还是不要在前端支持执行系统命令功能。</strong></p>
+]]></content>
+      <categories>
+        <category>学习总结</category>
+      </categories>
+      <tags>
+        <tag>DVWA</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>阅读笔记-FreeBuf企业安全系列之2020国内WAF产品研究报告</title>
     <url>/zh-CN/freebuf-waf-2020-report.html</url>
     <content><![CDATA[<p>准备好好了解产品的本人，</p>
-<p>看到最近新出《FreeBuf企业安全系列之2020国内WAF产品研究报告》。</p>
+<p>看到最近新出<a href="https://www.freebuf.com/articles/paper/226524.html" target="_blank" rel="noopener">《FreeBuf企业安全系列之2020国内WAF产品研究报告》</a>。</p>
 <p>当然是要仔细阅读，总结归纳一下。</p>
 <h3 id="笔记"><a href="#笔记" class="headerlink" title="笔记"></a>笔记</h3><ul>
 <li><p>部署WAF的必要性</p>
@@ -29,7 +192,7 @@
 <li>各类Web攻击防护，如SQL注入、XSS跨站、CSRF、网页后门等；</li>
 <li>各种自动化攻击防护，如暴力破解、撞库、批量注册、自动发帖的等；</li>
 <li>阻止其它常见威胁，如：爬虫、0day攻击、代码分析、嗅探、数据篡改、越权访问、敏感信息泄露、应用层DDoS、远程恶意包含、盗链、越权、扫描等</li>
-<li>其他管理与审计，如安全配置、日志分析、报表与统计功能等。</li>
+<li>其他管理与审计，如安全配置、日志分析、报表与统计功能等。<a id="more"></a></li>
 </ul>
 </li>
 <li><p>WAF的分类</p>
@@ -306,6 +469,15 @@
 </li>
 </ul>
 </li>
+</ul>
+<h3 id="常见的功能与要求"><a href="#常见的功能与要求" class="headerlink" title="常见的功能与要求"></a>常见的功能与要求</h3><ul>
+<li>资产清点：主机、账号、进程、端口、数据库、Web应用</li>
+<li>风险发现：打补丁、漏洞、弱密码</li>
+<li>入侵检测：攻击、暴力破解、异常登录、反弹shell</li>
+<li>合规基线：系统基线、应用基线、合规</li>
+<li>安全日志：操作、网络连接、账号操作、进程启动、DNS记录</li>
+<li>Agent、控制端管理</li>
+<li>资源耗用低</li>
 </ul>
 ]]></content>
       <categories>
